@@ -1,0 +1,98 @@
+﻿@page "/"
+
+@using CreatureCreator.Infrastructure.DtoModels;
+@using CreatureCreator.Infrastructure.Services;
+@using CreatureCreator.Core.Enums;
+
+@inject IDialogService DialogService
+@inject CreatureCreatorService Service
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudTable Items="@systemStatus" Hover="true">
+            <HeaderContent>
+                <MudTh>@*Icon*@</MudTh>
+                <MudTh Style="text-align:left">CHECK</MudTh>
+                <MudTh>DESCRIPTION</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Avatar"><MudIcon Icon="@(GetStatusIcon(@context.Status))" Color="@(GetStatusColor(@context.Status))" /></MudTd>
+                <MudTd DataLabel="Check" Style="text-align:left">@context.Name</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudItem>
+    <MudItem xs="6">
+        <MudTable Items="@creatures" Hover="true">
+            <HeaderContent>
+                <MudTh>@*Avatars*@</MudTh>
+                <MudTh>NAME</MudTh>
+                <MudTh>ID</MudTh>
+                <MudTh Style="text-align:right">ACTION</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Avatar">#</MudTd>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Id">@context.Id</MudTd>
+                <MudTd DataLabel="Action">
+                    <MudStack Row="true" Justify="Justify.FlexEnd">
+                        <MudIconButton Size="Size.Small" Color="Color.Info" Icon="@Icons.Material.Filled.Edit" Href="@($"/creature/{@context.Id}")" />
+                        <MudIconButton Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteCreature(@context.Id))"/>
+                    </MudStack>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudPaper Class="d-flex flex-column align-center">
+                    <MudPagination Rectangular="true" Variant="Variant.Text" Class="ma-2" />
+                </MudPaper>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
+
+
+
+@code {
+    List<DashboardCreatureDto> creatures;
+    List<ValidationStatusDto> systemStatus;
+
+    protected override async Task OnInitializedAsync()
+    {
+        systemStatus = await Service.ValidateDatabase();
+        if (!systemStatus.Any(s => s.Status != ValidationStatuses.OK))
+            creatures = await Service.GetCreatures();
+
+        await base.OnInitializedAsync();
+    }
+
+    public string GetStatusIcon(ValidationStatuses status)
+    {
+        return (status) switch
+        {
+            ValidationStatuses.UNKNOWN => Icons.Material.Filled.QuestionMark,
+            ValidationStatuses.OK => Icons.Material.Filled.Check,
+            ValidationStatuses.WARNING => Icons.Material.Filled.WarningAmber,
+            ValidationStatuses.ERROR => Icons.Material.Filled.ErrorOutline,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    public Color GetStatusColor(ValidationStatuses status)
+    {
+        return (status) switch
+        {
+            ValidationStatuses.UNKNOWN => Color.Default,
+            ValidationStatuses.OK => Color.Success,
+            ValidationStatuses.WARNING => Color.Warning,
+            ValidationStatuses.ERROR => Color.Error,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    private async void DeleteCreature(int creatureId)
+    {
+        await Service.DeleteCreatureAsync(creatureId);
+        creatures.RemoveAll(c => c.Id == creatureId);
+        this.StateHasChanged();
+    }
+}

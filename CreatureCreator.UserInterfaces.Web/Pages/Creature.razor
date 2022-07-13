@@ -1,0 +1,73 @@
+﻿@page "/creature/{CreatureId:int?}"
+@using CreatureCreator.Infrastructure.DtoModels
+@using CreatureCreator.Infrastructure.Services
+
+@inject IDialogService DialogService
+@inject CreatureCreatorService Service
+@inject IJSRuntime JSRuntime
+
+
+@if (creature != null)
+{
+    <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-2">
+        <MudStack Row="true">
+            <MudButton Variant="Variant.Outlined" Color="Color.Info">Item Lookup</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" OnClick="@NpcLookup">NPC Lookup</MudButton>
+        </MudStack>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveAsync">Save</MudButton>
+    </MudStack>
+    <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary" PanelClass="pa-6">
+        <MudTabPanel Text="Template">
+            <CreatureTemplate Creature="@creature" />
+        </MudTabPanel>
+        <MudTabPanel Text="Customization">
+            <CreatureCustomization Creature="@creature" AvailableCustomizations="@availableCustomizations" />
+        </MudTabPanel>
+        <MudTabPanel Text="Equipment">
+            <CreatureEquipment Creature="@creature" />
+        </MudTabPanel>
+    </MudTabs>
+}
+
+
+@code {
+    [Parameter]
+    public int? CreatureId { get; set; }
+
+
+    CreatureDto? creature;
+    Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>> availableCustomizations;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (CreatureId != null)
+            {
+                creature = await Service.GetCreatureByIdAsync((int)CreatureId);
+            }
+            if (creature == null)
+            {
+                var dialog = DialogService.Show<LoadCreature>("", new DialogOptions() { DisableBackdropClick = true });
+                var result = await dialog.Result;
+                creature = (CreatureDto)result.Data;
+            }
+
+            availableCustomizations = await Service.GetAvailableCustomizations(creature.Race, creature.Gender);
+            this.StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task SaveAsync()
+    {
+        if (creature != null)
+        {
+            await Service.SaveCreatureAsync(creature);
+        }
+    }
+
+    async Task NpcLookup()
+    {
+        await JSRuntime.InvokeVoidAsync("open", "/creature", "_blank", "height=200,width=200");
+    }
+}

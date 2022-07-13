@@ -1,0 +1,103 @@
+﻿@using CreatureCreator.Core.Enums
+@using CreatureCreator.Infrastructure.DtoModels
+@using CreatureCreator.Infrastructure.Services
+
+@inject CreatureCreatorService Service
+
+<MudGrid>
+    <!--Left side -->
+    <MudItem xs="3">
+
+        @for (int i = 0; i < Math.Min(6, AvailableCustomizations.Count); i++)
+        {
+            int iNested = i;
+            if (!Creature.Customizations.ContainsKey(AvailableCustomizations.ElementAt(i).Key.Id))
+            {
+                Creature.Customizations.Add(AvailableCustomizations.ElementAt(i).Key.Id, AvailableCustomizations.ElementAt(i).Value.First().Id);
+            }
+
+            <MudSelect T="int" @bind-Value="Creature.Customizations[AvailableCustomizations.ElementAt(iNested).Key.Id]" Label="@(AvailableCustomizations.ElementAt(iNested).Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+                @foreach (var choice in AvailableCustomizations.ElementAt(iNested).Value)
+                {
+                    <MudSelectItem Value="@choice.Id">
+                        <MudStack Row="true" Justify="Justify.SpaceBetween">
+                            <MudText>@choice.Name</MudText>
+                            <MudText>(@choice.Id)</MudText>
+                        </MudStack>
+                    </MudSelectItem>
+                }
+            </MudSelect>
+        }
+
+
+    </MudItem>
+
+    <!-- Character -->
+    <MudItem xs="6" Style="@($"background-image:url('images/models/{Creature.Gender.ToString().ToLower()}/{Creature.Race.ToString().ToLower()}.png'); background-repeat:no-repeat; background-position: center; background-size:contain;")">
+    </MudItem>
+
+    <!-- Right side-->
+    <MudItem xs="3">
+        @for (int i = 6; i < Math.Min(12, AvailableCustomizations.Count - 1); i++)
+        {
+            int iNested = i;
+            if (!Creature.Customizations.ContainsKey(AvailableCustomizations.ElementAt(i).Key.Id))
+            {
+                Creature.Customizations.Add(AvailableCustomizations.ElementAt(i).Key.Id, AvailableCustomizations.ElementAt(i).Value.First().Id);
+            }
+
+            <MudSelect T="int" @bind-Value="Creature.Customizations[AvailableCustomizations.ElementAt(iNested).Key.Id]" Label="@(AvailableCustomizations.ElementAt(iNested).Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+                @foreach (var choice in AvailableCustomizations.ElementAt(iNested).Value)
+                {
+                    <MudSelectItem Value="@choice.Id">
+                        <MudStack Row="true" Justify="Justify.SpaceBetween">
+                            <MudText>@choice.Name</MudText>
+                            <MudText>(@choice.Id)</MudText>
+                        </MudStack>
+                    </MudSelectItem>
+                }
+            </MudSelect>
+        }
+
+
+    </MudItem>
+
+    @if (AvailableCustomizations.Count > 12)
+    {
+        foreach (var remainingOption in AvailableCustomizations.Skip(12))
+        {
+            if (!Creature.Customizations.ContainsKey(remainingOption.Key.Id))
+            {
+                Creature.Customizations.Add(remainingOption.Key.Id, remainingOption.Value.First().Id);
+            }
+
+            <MudItem xs="3">
+                <MudSelect T="int" @bind-Value="Creature.Customizations[remainingOption.Key.Id]" Label="@(remainingOption.Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+                    @foreach (var choice in remainingOption.Value)
+                    {
+                        <MudSelectItem Value="@choice.Id">
+                            <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                <MudText>@choice.Name</MudText>
+                                <MudText>(@choice.Id)</MudText>
+                            </MudStack>
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        }
+    }
+
+
+</MudGrid>
+
+
+@code {
+    [Parameter]
+    public CreatureDto Creature { get; set; }
+
+    [Parameter]
+    public Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>> AvailableCustomizations { get; set; }
+
+
+    string cssClass = "pb-2 pt-2";
+}

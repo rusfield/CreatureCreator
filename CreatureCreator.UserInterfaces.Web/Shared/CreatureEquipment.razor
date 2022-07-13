@@ -1,0 +1,126 @@
+﻿@using CreatureCreator.Infrastructure.DtoModels
+<MudGrid>
+    <!--Left side -->
+    <MudItem xs="3">
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudNumericField @bind-Value="Creature.HeadItemDisplayInfoId" Label="Head" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.HeadItemDisplayInfoId != null ? "equipped" : "empty")}/head.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudNumericField @bind-Value="Creature.ShouldersItemDisplayInfoId" Label="Shoulders" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.ShouldersItemDisplayInfoId != null ? "equipped" : "empty")}/shoulders.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudNumericField @bind-Value="Creature.ChestItemDisplayInfoId" Label="Chest" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.ChestItemDisplayInfoId != null ? "equipped" : "empty")}/chest.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudNumericField @bind-Value="Creature.HandsItemDisplayInfoId" Label="Hands" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.HandsItemDisplayInfoId != null ? "equipped" : "empty")}/hands.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudNumericField @bind-Value="Creature.LegsItemDisplayInfoId" Label="Legs" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.LegsItemDisplayInfoId != null ? "equipped" : "empty")}/legs.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudNumericField @bind-Value="Creature.FeetItemDisplayInfoId" Label="Feet" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.FeetItemDisplayInfoId != null ? "equipped" : "empty")}/feet.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+        </MudStack>
+
+    </MudItem>
+
+    <!-- Character -->
+    <MudItem xs="6" Style="@($"background-image:url('images/models/{Creature.Gender.ToString().ToLower()}/{Creature.Race.ToString().ToLower()}.png'); background-repeat:no-repeat; background-position: center; background-size:contain;")">
+    </MudItem>
+
+    <!-- Right side-->
+    <MudItem xs="3">
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudImage Src="@($"images/items/{(Creature.BackItemDisplayInfoId != null ? "equipped" : "empty")}/back.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.BackItemDisplayInfoId" Label="Back" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudImage Src="@($"images/items/{(Creature.TabardItemDisplayInfoId != null ? "equipped" : "empty")}/tabard.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.TabardItemDisplayInfoId" Label="Tabard" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudImage Src="@($"images/items/{(Creature.ShirtItemDisplayInfoId != null ? "equipped" : "empty")}/shirt.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.ShirtItemDisplayInfoId" Label="Shirt" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudImage Src="@($"images/items/{(Creature.WaistItemDisplayInfoId != null ? "equipped" : "empty")}/waist.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.WaistItemDisplayInfoId" Label="Waist" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudImage Src="@($"images/items/{(Creature.WristsItemDisplayInfoId != null ? "equipped" : "empty")}/wrists.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.WristsItemDisplayInfoId" Label="Wrists" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="pb-2 pt-2">
+            <MudImage Src="@($"images/items/{(Creature.QuiverItemDisplayInfoId != null ? "equipped" : "empty")}/quiver.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.QuiverItemDisplayInfoId" Label="Quiver" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+
+    </MudItem>
+
+    <MudItem xs="4" Class="pr-16">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
+            <MudImage Src="@($"images/items/{(Creature.MainHandItemId != null ? "equipped" : "empty")}/mainhand.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.MainHandItemId" Label="Main Hand" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
+            <MudImage Src="@($"images/items/{(Creature.MainHandItemId != null ? "equipped" : "empty")}/mainhand.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
+            <MudNumericField @bind-Value="Creature.MainHandItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
+            <MudNumericField @bind-Value="Creature.MainHandItemVisual" Label="Enchant" HideSpinButtons="true" />
+        </MudStack>
+
+    </MudItem>
+
+    <MudItem xs="4" Class="pl-8 pr-8">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
+            <MudImage Src="@($"images/items/{(Creature.OffHandItemId != null ? "equipped" : "empty")}/offhand.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.OffHandItemId" Label="Off Hand" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
+            <MudImage Src="@($"images/items/{(Creature.OffHandItemId != null ? "equipped" : "empty")}/offhand.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
+            <MudNumericField @bind-Value="Creature.OffHandItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
+            <MudNumericField @bind-Value="Creature.OffHandItemVisual" Label="Enchant" HideSpinButtons="true" />
+        </MudStack>
+
+    </MudItem>
+
+    <MudItem xs="4" Class="pl-16">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
+            <MudImage Src="@($"images/items/{(Creature.RangedHandItemId != null ? "equipped" : "empty")}/ranged.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudNumericField @bind-Value="Creature.RangedHandItemId" Label="Ranged" Variant="Variant.Outlined" HideSpinButtons="true" />
+        </MudStack>
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
+            <MudImage Src="@($"images/items/{(Creature.RangedHandItemId != null ? "equipped" : "empty")}/ranged.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
+            <MudNumericField @bind-Value="Creature.RangedHandItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
+            <MudNumericField @bind-Value="Creature.RangedHandItemVisual" Label="Enchant" HideSpinButtons="true" />
+        </MudStack>
+
+    </MudItem>
+
+</MudGrid>
+
+
+
+
+@code {
+    [Parameter]
+    public CreatureDto Creature { get; set; }
+
+
+}

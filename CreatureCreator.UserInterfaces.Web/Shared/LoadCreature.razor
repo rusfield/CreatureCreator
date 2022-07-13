@@ -1,0 +1,122 @@
+﻿@using CreatureCreator.Core.Enums;
+@using CreatureCreator.Infrastructure.DtoModels
+@using CreatureCreator.Infrastructure.Services
+
+@inject CreatureCreatorService Service
+@inject ISnackbar Snackbar
+
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 400px;">
+            <MudTextField DebounceInterval="1000" OnDebounceIntervalElapsed="CharacterNameDebounce" @bind-Value="_characterName" Label="Character Name" Variant="Variant.Outlined" FullWidth="true" />
+            <MudText Typo="Typo.h4">
+                - or -
+            </MudText>
+            <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureIdDebounce" @bind-Value="_creatureId" Label="Creature ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" />
+            <MudText Typo="Typo.h4">
+                - or -
+            </MudText>
+            <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureDisplayIdDebounce" @bind-Value="_creatureDisplayId" Label="Creature Display ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" />
+            <MudText Typo="Typo.h4">
+                - or -
+            </MudText>
+            <MudText Typo="Typo.h6">
+                Start from scratch
+            </MudText>
+            <MudStack Row="true" Style="height:200">
+                <RaceSelector Gender="Genders.Male" RaceSelectedCallback="SelectNewMale" />
+                <RaceSelector Gender="Genders.Female" RaceSelectedCallback="SelectNewFemale" />
+            </MudStack>
+            <MudSpacer />
+        </MudStack>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance LoadCreatureDialog { get; set; }
+
+    int bannerHeight = 64;
+    string _characterName;
+    int? _creatureId;
+    int? _creatureDisplayId;
+
+    private async Task SelectNewMale(DisplayRaces race)
+    {
+        await SelectionNew(race, Genders.Male);
+    }
+
+    private async Task SelectNewFemale(DisplayRaces race)
+    {
+        await SelectionNew(race, Genders.Female);
+    }
+
+    private async Task SelectionNew(DisplayRaces race, Genders gender)
+    {
+        var creature = await Service.GetCreatureByRaceAndGender(race, gender);
+        Close(creature);
+    }
+
+    private void Close(CreatureDto creature)
+    {
+        LoadCreatureDialog.Close(DialogResult.Ok(creature));
+    }
+
+    private void OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        Console.WriteLine(e.File.Name);
+    }
+
+    async Task CreatureIdDebounce(string search)
+    {
+        if (int.TryParse(search, out int id))
+        {
+            var creature = await Service.GetCreatureByIdAsync(id);
+            if (creature == null)
+            {
+                Snackbar.Add($"Creature ID {search} not found.", Severity.Info);
+            }
+            else
+            {
+                Close(creature);
+            }
+        }
+        else
+        {
+            Snackbar.Add($"Invalid input.", Severity.Info);
+        }
+    }
+
+    async Task CreatureDisplayIdDebounce(string search)
+    {
+        if (int.TryParse(search, out int id))
+        {
+            var creature = await Service.GetCreatureByDisplayIdAsync(id);
+            if (creature == null)
+            {
+                Snackbar.Add($"Creature Display ID {search} not found.", Severity.Info);
+            }
+            else
+            {
+                Close(creature);
+            }
+        }
+        else
+        {
+            Snackbar.Add($"Invalid input.", Severity.Info);
+        }
+    }
+    async Task CharacterNameDebounce(string search)
+    {
+        var creature = await Service.GetCreatureByCharacterNameAsync(search);
+        if (creature == null)
+        {
+            Snackbar.Add($"Character {search} not found.", Severity.Info);
+        }
+        else
+        {
+            Close(creature);
+        }
+    }
+
+}

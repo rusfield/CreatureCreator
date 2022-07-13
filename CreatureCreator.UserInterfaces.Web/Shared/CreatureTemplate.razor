@@ -1,0 +1,72 @@
+﻿@using CreatureCreator.Core.Enums
+@using CreatureCreator.Infrastructure.DtoModels
+@inherits MudComponentBase
+
+<MudGrid>
+    <MudItem xs="3">
+        <MudNumericField @bind-Value="Creature.Id" Label="ID" Variant="Variant.Outlined" HideSpinButtons="true" Class="@cssClass" />
+        <MudNumericField @bind-Value="Creature.Level" Label="Level" HideSpinButtons="true" Variant="Variant.Outlined" Class="@cssClass" />
+        <MudSelect T="Ranks" @bind-Value="Creature.Rank" Label="Rank" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+            <MudSelectItem Value="@(Ranks.LESSER)">Lesser</MudSelectItem>
+            <MudSelectItem Value="@(Ranks.NORMAL)">Normal</MudSelectItem>
+            <MudSelectItem Value="@(Ranks.RARE)">Rare</MudSelectItem>
+            <MudSelectItem Value="@(Ranks.ELITE)">Elite</MudSelectItem>
+            <MudSelectItem Value="@(Ranks.RARE_ELITE)">Rare Elite</MudSelectItem>
+            <MudSelectItem Value="@(Ranks.BOSS)">Boss</MudSelectItem>
+        </MudSelect>
+        <MudSelect T="CreatureTypes" @bind-Value="Creature.CreatureType" Label="Type" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+            <MudSelectItem Value="@(CreatureTypes.NONE)">None</MudSelectItem>
+            <MudSelectItem Value="@(CreatureTypes.HUMANOID)">Humanoid</MudSelectItem>
+            <MudSelectItem Value="@(CreatureTypes.DEMON)">Demon</MudSelectItem>
+            <MudSelectItem Value="@(CreatureTypes.DRAGONKIN)">Dragonkin</MudSelectItem>
+            <MudSelectItem Value="@(CreatureTypes.UNDEAD)">Undead</MudSelectItem>
+            <MudSelectItem Value="@(CreatureTypes.GIANT)">Giant</MudSelectItem>
+            <MudSelectItem Value="@(CreatureTypes.BEAST)">Beast</MudSelectItem>
+            <MudSelectItem Value="@(CreatureTypes.ELEMENTAL)">Elemental</MudSelectItem>
+        </MudSelect>
+        <MudSelect T="CreatureUnitClasses" @bind-Value="Creature.CreatureUnitClass" Label="Power Resource" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+            <MudSelectItem Value="@(CreatureUnitClasses.WARRIOR)">Rage</MudSelectItem>
+            <MudSelectItem Value="@(CreatureUnitClasses.ROGUE)">Energy</MudSelectItem>
+            <MudSelectItem Value="@(CreatureUnitClasses.PALADIN)">Mana Melee</MudSelectItem>
+            <MudSelectItem Value="@(CreatureUnitClasses.MAGE)">Mana Caster</MudSelectItem>
+        </MudSelect>
+        <MudNumericField @bind-Value="Creature.Scale" Label="Scale" HideSpinButtons="true" Class="@cssClass" Variant="Variant.Outlined" />
+
+    </MudItem>
+
+    <MudItem xs="6" Style="@($"background-image:url('images/models/{Creature.Gender.ToString().ToLower()}/{Creature.Race.ToString().ToLower()}.png'); background-repeat:no-repeat; background-position: center; background-size:contain;")">
+    </MudItem>
+
+    <MudItem xs="3">
+
+    </MudItem>
+
+
+
+
+
+
+
+
+
+    <MudItem xs="2" />
+    <MudItem xs="8">
+        <MudTextField @bind-Value="Creature.Name" Label="Name" Variant="Variant.Outlined" />
+    </MudItem>
+    <MudItem xs="2" />
+
+    <MudItem xs="3" />
+    <MudItem xs="6">
+        <MudTextField @bind-Value="Creature.SubName" Label="Sub Name" />
+    </MudItem>
+    <MudItem xs="3" />
+
+
+</MudGrid>
+@code {
+    [Parameter]
+    public CreatureDto Creature { get; set; }
+
+    string cssClass = "pb-2 pt-2";
+
+}

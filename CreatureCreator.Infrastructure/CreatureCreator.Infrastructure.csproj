@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CreatureCreator.Core\CreatureCreator.Core.csproj" />
+    <ProjectReference Include="..\CreatureCreator.Db2Provider.WowToolsFiles\CreatureCreator.Db2Provider.WowToolsFiles.csproj" />
+    <ProjectReference Include="..\CreatureCreator.MySqlProvider.EntityFrameworkCore\CreatureCreator.MySqlProvider.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+</Project>
