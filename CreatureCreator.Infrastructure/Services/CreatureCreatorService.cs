@@ -352,13 +352,23 @@ namespace CreatureCreator.Infrastructure.Services
             return result;
         }
 
-        public async Task<CreatureDto?> GetCreatureByCharacterNameAsync(string characterName)
+        public async Task<CreatureDto?> GetCreatureByCharacterNameAsync(string characterName, Action<string, string, int>? progressCallback = null)
         {
+            if (progressCallback == null)
+                progressCallback = ConsoleProgressCallback;
+
+            progressCallback("Character", $"Retrieving {characterName}", 15);
             var character = await _mySql.GetAsync<Characters>(c => c.Name == characterName);
             if (character == null)
+            {
+                progressCallback("Not found", $"{characterName} not found", 100);
                 return null;
+            }
 
+            progressCallback("Customizations", "Retrieving customizations", 30);
             var characterCustomization = await _mySql.GetManyAsync<CharacterCustomizations>(c => c.Guid == character.Guid);
+            progressCallback("Customizations", $"Found {characterCustomization.Count()} customizations", 40);
+
             var customizations = new Dictionary<int, int>();
             foreach (var customization in characterCustomization)
             {
@@ -378,12 +388,15 @@ namespace CreatureCreator.Infrastructure.Services
                 Race = character.Race
             };
 
+            progressCallback("Equipment", "Retrieving equipment", 50);
             var characterItems = await _mySql.GetManyAsync<ItemInstance>(c => c.OwnerGuid == character.Guid);
             var characterEquipMap = await _mySql.GetManyAsync<CharacterInventory>(c => c.Guid == character.Guid);
-            foreach (var equippedItem in characterEquipMap)
+            foreach (var equippedItem in characterEquipMap.OrderBy(c => c.Slot))
             {
+                progressCallback("Equipment", $"Handling {equippedItem.Slot.ToString().ToLower().Replace("_", "")} slot", Math.Min(50 + 2 * (int)equippedItem.Slot, 99));
+
                 var item = characterItems.Where(i => i.Guid == equippedItem.Item).FirstOrDefault();
-                if (item == null)
+                if (item == null || (int)equippedItem.Slot > Enum.GetValues(typeof(CharacterInventorySlots)).Cast<int>().Max())
                     continue;
 
                 int itemAppearanceModifierId = 0;
@@ -473,7 +486,7 @@ namespace CreatureCreator.Infrastructure.Services
                         break;
                 };
             }
-
+            progressCallback("Done", "Creature returned", 100);
             return result;
         }
 
@@ -516,6 +529,11 @@ namespace CreatureCreator.Infrastructure.Services
                 );
             }
             return result;
+        }
+
+        void ConsoleProgressCallback(string stepTitle, string stepSubTitle, int progress)
+        {
+            Console.WriteLine($"{progress} %: {stepTitle} => {stepSubTitle}");
         }
     }
 }

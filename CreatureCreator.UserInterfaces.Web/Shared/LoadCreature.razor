@@ -5,19 +5,31 @@
 @inject CreatureCreatorService Service
 @inject ISnackbar Snackbar
 
+<MudOverlay Visible="isLoading" DarkBackground="false" Absolute="true" Class="Z-80">
+    <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 400px;">
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+        <MudText Typo="Typo.h5" Color="Color.Primary">Title</MudText>
+        <MudText Typo="Typo.h6" Color="Color.Primary">Subtitle</MudText>
+        <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="50" Class="my-7">
+            <MudText Typo="Typo.subtitle1" Color="Color.Dark">
+                <b>@($"25%")</b>
+            </MudText>
+        </MudProgressLinear>
+    </MudStack>
+</MudOverlay>
 
 <MudDialog>
     <DialogContent>
-        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 400px;">
-            <MudTextField DebounceInterval="1000" OnDebounceIntervalElapsed="CharacterNameDebounce" @bind-Value="_characterName" Label="Character Name" Variant="Variant.Outlined" FullWidth="true" />
+        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 400px;" Class="@(isLoading ? "invisible" : "visible")">
+            <MudTextField DebounceInterval="1000" OnDebounceIntervalElapsed="CharacterNameDebounce" @bind-Value="_characterName" @ref="characterNameRef" Label="Character Name" Variant="Variant.Outlined" FullWidth="true" Disabled="isLoading" />
             <MudText Typo="Typo.h4">
                 - or -
             </MudText>
-            <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureIdDebounce" @bind-Value="_creatureId" Label="Creature ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" />
+            <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureIdDebounce" @bind-Value="_creatureId" @ref="creatureIdRef" Label="Creature ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" Disabled="isLoading" />
             <MudText Typo="Typo.h4">
                 - or -
             </MudText>
-            <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureDisplayIdDebounce" @bind-Value="_creatureDisplayId" Label="Creature Display ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" />
+            <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureDisplayIdDebounce" @bind-Value="_creatureDisplayId" @ref="creatureDisplayIdRef" Label="Creature Display ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" Disabled="isLoading" />
             <MudText Typo="Typo.h4">
                 - or -
             </MudText>
@@ -34,12 +46,30 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance LoadCreatureDialog { get; set; }
+    [CascadingParameter]
+    MudDialogInstance LoadCreatureDialog { get; set; }
 
+    
+    [Parameter]
+    public Action<string, string, int> ProgressCallback { get; set; }
+    
+
+    private void OverrideProgressCallback(string progressTitle, string progressSubTitle, int progress)
+    {
+        isLoading = progress < 100;
+        ProgressCallback.Invoke(progressTitle, progressSubTitle, progress);
+    }
+
+    bool isLoading = false;
     int bannerHeight = 64;
     string _characterName;
     int? _creatureId;
     int? _creatureDisplayId;
+
+
+    MudTextField<string> characterNameRef;
+    MudNumericField<int?> creatureIdRef;
+    MudNumericField<int?> creatureDisplayIdRef;
 
     private async Task SelectNewMale(DisplayRaces race)
     {
@@ -79,12 +109,14 @@
             else
             {
                 Close(creature);
+                return;
             }
         }
         else
         {
             Snackbar.Add($"Invalid input.", Severity.Info);
         }
+        await creatureIdRef.FocusAsync();
     }
 
     async Task CreatureDisplayIdDebounce(string search)
@@ -99,16 +131,18 @@
             else
             {
                 Close(creature);
+                return;
             }
         }
         else
         {
             Snackbar.Add($"Invalid input.", Severity.Info);
         }
+        await creatureDisplayIdRef.FocusAsync();
     }
     async Task CharacterNameDebounce(string search)
     {
-        var creature = await Service.GetCreatureByCharacterNameAsync(search);
+        var creature = await Service.GetCreatureByCharacterNameAsync(search, OverrideProgressCallback);
         if (creature == null)
         {
             Snackbar.Add($"Character {search} not found.", Severity.Info);
@@ -116,7 +150,9 @@
         else
         {
             Close(creature);
+            return;
         }
+        await characterNameRef.FocusAsync();
     }
 
 }

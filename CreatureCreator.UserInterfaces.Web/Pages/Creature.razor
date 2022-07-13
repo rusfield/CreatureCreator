@@ -6,6 +6,20 @@
 @inject CreatureCreatorService Service
 @inject IJSRuntime JSRuntime
 
+<MudOverlay Visible="isLoading" DarkBackground="true" Absolute="true" Class="Z-80">
+    <MudPaper Style="height:400;width:400">
+        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
+            <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+            <MudText Typo="Typo.h5" Color="Color.Primary">@loadingTitle</MudText>
+            <MudText Typo="Typo.h6" Color="Color.Primary">@loadingSubTitle</MudText>
+            <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="loadingProgress" Class="my-7">
+                <MudText Typo="Typo.subtitle1" Color="Color.Dark">
+                    <b>@($"{loadingProgress}%")</b>
+                </MudText>
+            </MudProgressLinear>
+        </MudStack>
+    </MudPaper>
+</MudOverlay>
 
 @if (creature != null)
 {
@@ -47,7 +61,10 @@
             }
             if (creature == null)
             {
-                var dialog = DialogService.Show<LoadCreature>("", new DialogOptions() { DisableBackdropClick = true });
+                var parameters = new DialogParameters();
+                parameters.Add("ProgressCallback", SetLoading);
+
+                var dialog = DialogService.Show<LoadCreature>("", parameters, new DialogOptions() { DisableBackdropClick = true });
                 var result = await dialog.Result;
                 creature = (CreatureDto)result.Data;
             }
@@ -70,4 +87,23 @@
     {
         await JSRuntime.InvokeVoidAsync("open", "/creature", "_blank", "height=200,width=200");
     }
+
+
+
+
+    #region Loading
+    bool isLoading = false;
+    string loadingTitle = "";
+    string loadingSubTitle = "";
+    int loadingProgress = 0;
+    private void SetLoading(string progressTitle, string progressSubTitle, int progress)
+    {
+        isLoading = progress < 101;
+
+        loadingProgress = progress;
+        loadingTitle = progressTitle;
+        loadingSubTitle = progressSubTitle;
+        this.StateHasChanged();
+    }
+    #endregion
 }
