@@ -6,23 +6,9 @@
 @inject CreatureCreatorService Service
 @inject IJSRuntime JSRuntime
 
-<MudOverlay Visible="isLoading" DarkBackground="true" Absolute="true" Class="Z-80">
-    <MudPaper Style="height:400;width:400">
-        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
-            <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
-            <MudText Typo="Typo.h5" Color="Color.Primary">@loadingTitle</MudText>
-            <MudText Typo="Typo.h6" Color="Color.Primary">@loadingSubTitle</MudText>
-            <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="loadingProgress" Class="my-7">
-                <MudText Typo="Typo.subtitle1" Color="Color.Dark">
-                    <b>@($"{loadingProgress}%")</b>
-                </MudText>
-            </MudProgressLinear>
-        </MudStack>
-    </MudPaper>
-</MudOverlay>
-
 @if (creature != null)
 {
+
     <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-2">
         <MudStack Row="true">
             <MudButton Variant="Variant.Outlined" Color="Color.Info">Item Lookup</MudButton>
@@ -30,17 +16,19 @@
         </MudStack>
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveAsync">Save</MudButton>
     </MudStack>
-    <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary" PanelClass="pa-6">
-        <MudTabPanel Text="Template">
-            <CreatureTemplate Creature="@creature" />
-        </MudTabPanel>
-        <MudTabPanel Text="Customization">
-            <CreatureCustomization Creature="@creature" AvailableCustomizations="@availableCustomizations" />
-        </MudTabPanel>
-        <MudTabPanel Text="Equipment">
-            <CreatureEquipment Creature="@creature" />
-        </MudTabPanel>
-    </MudTabs>
+    <MudPaper>
+        <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary" PanelClass="pa-6">
+            <MudTabPanel Text="Template">
+                <CreatureTemplate Creature="@creature" />
+            </MudTabPanel>
+            <MudTabPanel Text="Customization">
+                <CreatureCustomization Creature="@creature" AvailableCustomizations="@availableCustomizations" />
+            </MudTabPanel>
+            <MudTabPanel Text="Equipment">
+                <CreatureEquipment Creature="@creature" />
+            </MudTabPanel>
+        </MudTabs>
+    </MudPaper>
 }
 
 
@@ -55,19 +43,11 @@
     {
         if (firstRender)
         {
-            if (CreatureId != null)
-            {
-                creature = await Service.GetCreatureByIdAsync((int)CreatureId);
-            }
-            if (creature == null)
-            {
-                var parameters = new DialogParameters();
-                parameters.Add("ProgressCallback", SetLoading);
-
-                var dialog = DialogService.Show<LoadCreature>("", parameters, new DialogOptions() { DisableBackdropClick = true });
-                var result = await dialog.Result;
-                creature = (CreatureDto)result.Data;
-            }
+            var parameters = new DialogParameters();
+            parameters.Add("CreatureId", CreatureId);
+            var dialog = DialogService.Show<LoadCreature>("", parameters, new DialogOptions() { DisableBackdropClick = true });
+            var result = await dialog.Result;
+            creature = (CreatureDto)result.Data;
 
             availableCustomizations = await Service.GetAvailableCustomizations(creature.Race, creature.Gender);
             this.StateHasChanged();
@@ -87,23 +67,4 @@
     {
         await JSRuntime.InvokeVoidAsync("open", "/creature", "_blank", "height=200,width=200");
     }
-
-
-
-
-    #region Loading
-    bool isLoading = false;
-    string loadingTitle = "";
-    string loadingSubTitle = "";
-    int loadingProgress = 0;
-    private void SetLoading(string progressTitle, string progressSubTitle, int progress)
-    {
-        isLoading = progress < 101;
-
-        loadingProgress = progress;
-        loadingTitle = progressTitle;
-        loadingSubTitle = progressSubTitle;
-        this.StateHasChanged();
-    }
-    #endregion
 }

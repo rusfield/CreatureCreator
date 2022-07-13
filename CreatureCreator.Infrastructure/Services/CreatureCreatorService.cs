@@ -194,14 +194,18 @@ namespace CreatureCreator.Infrastructure.Services
             return result;
         }
 
-        public async Task<CreatureDto?> GetCreatureByIdAsync(int creatureId)
+        public async Task<CreatureDto?> GetCreatureByIdAsync(int creatureId, Action<string, string, int>? progressCallback = null)
         {
+            if (progressCallback == null)
+                progressCallback = ConsoleProgressCallback;
+
+            progressCallback("Creature", $"Retrieving first Display ID for {creatureId}", 5);
             // This will only return the first model.
             // If the desired result has multiple displays, use the desired one directly instead.
             var creatureTemplateModel = await _mySql.GetAsync<CreatureTemplateModel>(c => c.CreatureId == creatureId);
             if (creatureTemplateModel != null)
             {
-                var creature = await GetCreatureByDisplayIdAsync(creatureTemplateModel.CreatureDisplayId);
+                var creature = await GetCreatureByDisplayIdAsync(creatureTemplateModel.CreatureDisplayId, progressCallback);
                 if (creature != null)
                 {
                     // Override the automatically generated Id
@@ -212,30 +216,47 @@ namespace CreatureCreator.Infrastructure.Services
             return null;
         }
 
-        public async Task<CreatureDto?> GetCreatureByDisplayIdAsync(int creatureDisplayId)
+        public async Task<CreatureDto?> GetCreatureByDisplayIdAsync(int creatureDisplayId, Action<string, string, int>? progressCallback = null)
         {
+            if (progressCallback == null)
+                progressCallback = ConsoleProgressCallback;
+
+            progressCallback("Creature", $"Retrieving Creature Template Model", 10);
             CreatureTemplate? creatureTemplate = null;
             var creatureTemplateModel = await _mySql.GetAsync<CreatureTemplateModel>(c => c.CreatureDisplayId == creatureDisplayId);
             if (creatureTemplateModel != null)
             {
+                progressCallback("Creature", $"Retrieving Creature Template", 15);
                 creatureTemplate = await _mySql.GetAsync<CreatureTemplate>(c => c.Entry == creatureTemplateModel.CreatureId);
             }
 
+            progressCallback("Creature", $"Retrieving Display Info", 20);
             var displayInfo = await _mySql.GetAsync<CreatureDisplayInfo>(c => c.Id == creatureDisplayId) ?? await _db2.GetAsync<CreatureDisplayInfo>(c => c.Id == creatureDisplayId);
             if (displayInfo == null)
+            {
+                progressCallback("Failed", $"Display Info for Display Id {creatureDisplayId} not found", 100);
                 return null;
+            }
 
+            progressCallback("Creature", $"Retrieving Display Info Extra", 30);
             var displayInfoExtra = await _mySql.GetAsync<CreatureDisplayInfoExtra>(c => c.Id == displayInfo.ExtendedDisplayInfoId) ?? await _db2.GetAsync<CreatureDisplayInfoExtra>(c => c.Id == displayInfo.ExtendedDisplayInfoId);
             if (displayInfoExtra == null)
+            {
+                progressCallback("Failed", $"Display Info Extra for Display Id {creatureDisplayId} not found", 100);
                 return null;
+            }
 
+            progressCallback("Customizations", $"Retrieving available customizations", 40);
             var availableCustomizations = await GetAvailableCustomizations(displayInfoExtra.DisplayRaceId, displayInfo.Gender);
+            progressCallback("Customizations", $"Retrieving creature customizations", 60);
             var hotfixCustomizations = await _mySql.GetManyAsync<CreatureDisplayInfoOption>(h => h.CreatureDisplayInfoExtraId == displayInfoExtra.Id);
             var db2Customizations = await _db2.GetManyAsync<CreatureDisplayInfoOption>(h => h.CreatureDisplayInfoExtraId == displayInfoExtra.Id);
             var customizations = new Dictionary<int, int>();
 
-            foreach (var availableCustomization in availableCustomizations)
+            foreach (var (availableCustomization, index) in availableCustomizations.Select((value, idx) => (value,idx)))
             {
+                progressCallback("Customizations", $"Preparing {availableCustomization.Key.Name}", Math.Min(60 + index, 70));
+
                 var hotfixCustomization = hotfixCustomizations.Where(hc => hc.ChrCustomizationOptionId == availableCustomization.Key.Id).FirstOrDefault();
                 var db2Customization = db2Customizations.Where(dc => dc.ChrCustomizationOptionId == availableCustomization.Key.Id).FirstOrDefault();
                 if (hotfixCustomization != null)
@@ -268,12 +289,15 @@ namespace CreatureCreator.Infrastructure.Services
                 Rank = creatureTemplate != null ? creatureTemplate.Rank : Ranks.NORMAL
             };
 
+            progressCallback("Equipment", $"Retrieving equipment", 80);
             var hotfixEquipment = await _mySql.GetManyAsync<NpcModelItemSlotDisplayInfo>(npc => npc.NpcModelId == displayInfoExtra.Id);
             var db2Equipment = await _db2.GetManyAsync<NpcModelItemSlotDisplayInfo>(npc => npc.NpcModelId == displayInfoExtra.Id);
 
             for (int i = 0; i <= Enum.GetValues(typeof(ArmorSlots)).Cast<int>().Max(); i++)
             {
                 var itemSlot = (ArmorSlots)i;
+                progressCallback("Equipment", $"Handling {itemSlot.ToString().ToLower().Replace("_", "")} slot", Math.Min(80 + (int)itemSlot, 90));
+
                 var hotfixItem = hotfixEquipment.FirstOrDefault(h => (int)h.ItemSlot == i);
                 var db2Item = db2Equipment.FirstOrDefault(d => (int)d.ItemSlot == i);
                 var item = hotfixItem != null ? hotfixItem : (db2Item != null ? db2Item : null);
@@ -321,6 +345,7 @@ namespace CreatureCreator.Infrastructure.Services
                 }
             }
 
+            progressCallback("Equipment", $"Handling weapons", 95);
             if (creatureTemplate != null)
             {
                 var creatureEquipTemplate = await _mySql.GetAsync<CreatureEquipTemplate>(c => c.CreatureId == creatureTemplate.Entry);
@@ -348,6 +373,7 @@ namespace CreatureCreator.Infrastructure.Services
                         result.RangedHandItemVisual = creatureEquipTemplate.ItemVisual3;
                 }
             }
+            progressCallback("Done", "Returning creature", 100);
 
             return result;
         }
@@ -361,7 +387,7 @@ namespace CreatureCreator.Infrastructure.Services
             var character = await _mySql.GetAsync<Characters>(c => c.Name == characterName);
             if (character == null)
             {
-                progressCallback("Not found", $"{characterName} not found", 100);
+                progressCallback("Failed", $"{characterName} not found", 100);
                 return null;
             }
 
@@ -490,9 +516,14 @@ namespace CreatureCreator.Infrastructure.Services
             return result;
         }
 
-        public async Task<CreatureDto> GetCreatureByRaceAndGender(DisplayRaces race, Genders gender)
+        public async Task<CreatureDto> GetCreatureByRaceAndGender(DisplayRaces race, Genders gender, Action<string, string, int>? progressCallback = null)
         {
+            if (progressCallback == null)
+                progressCallback = ConsoleProgressCallback;
+
+            progressCallback("Creature", "Preparing creature", 50);
             var id = await GetNextIdAsync();
+            progressCallback("Done", "Creature returned", 100);
             return new CreatureDto()
             {
                 Race = race,
@@ -531,7 +562,7 @@ namespace CreatureCreator.Infrastructure.Services
             return result;
         }
 
-        void ConsoleProgressCallback(string stepTitle, string stepSubTitle, int progress)
+        static void ConsoleProgressCallback(string stepTitle, string stepSubTitle, int progress)
         {
             Console.WriteLine($"{progress} %: {stepTitle} => {stepSubTitle}");
         }
