@@ -191,6 +191,8 @@ namespace CreatureCreator.Infrastructure.Services
                     Gender = displayInfo.DisplaySexId
                 });
             }
+            // Newest on top
+            result.Reverse();
             return result;
         }
 
@@ -253,7 +255,7 @@ namespace CreatureCreator.Infrastructure.Services
             var db2Customizations = await _db2.GetManyAsync<CreatureDisplayInfoOption>(h => h.CreatureDisplayInfoExtraId == displayInfoExtra.Id);
             var customizations = new Dictionary<int, int>();
 
-            foreach (var (availableCustomization, index) in availableCustomizations.Select((value, idx) => (value,idx)))
+            foreach (var (availableCustomization, index) in availableCustomizations.Select((value, idx) => (value, idx)))
             {
                 progressCallback("Customizations", $"Preparing {availableCustomization.Key.Name}", Math.Min(60 + index, 70));
 
@@ -425,25 +427,74 @@ namespace CreatureCreator.Infrastructure.Services
                 if (item == null || (int)equippedItem.Slot > Enum.GetValues(typeof(CharacterInventorySlots)).Cast<int>().Max())
                     continue;
 
-                int itemAppearanceModifierId = 0;
-                if (!string.IsNullOrWhiteSpace(item.BonusListIds))
+                var itemAppearanceId = 0;
+                var itemAppearanceModifierId = 0;
+                var itemId = item.ItemEntry;
+                var itemVisual = 0;
+                var transmogItem = await _mySql.GetAsync<ItemInstanceTransmog>(c => c.ItemGuid == equippedItem.Item);
+
+                // Try get ItemAppearanceId by transmog.
+                // Note: Dont mix up ItemModifiedAppearance.Id with ItemAppearanceModifierId.
+                if (transmogItem != null)
                 {
-                    var bonusListIds = item.BonusListIds.Trim().Split(' ').Select(int.Parse).ToList();
-                    if (bonusListIds != null && bonusListIds.Any())
+                    var itemModifiedAppearance = await _db2.GetAsync<ItemModifiedAppearance>(c => c.Id == transmogItem.ItemModifiedAppearanceAllSpecs);
+                    if (itemModifiedAppearance != null)
                     {
-                        var itemBonus = await _db2.GetAsync<ItemBonus>(bonus => bonus.Type == 7 && bonusListIds.Any(bonusId => bonusId == bonus.ParentItemBonusListId));
-                        if (itemBonus != null)
+                        itemAppearanceId = itemModifiedAppearance.ItemAppearanceId;
+                        itemAppearanceModifierId = itemModifiedAppearance.ItemAppearanceModifierId;
+                        itemId = itemModifiedAppearance.ItemId;
+                    }
+                    if (transmogItem.SpellItemEnchantmentAllSpecs > 0 && equippedItem.Slot.IsWeaponSlot())
+                    {
+                        var spellItemEnchantment = await _db2.GetAsync<SpellItemEnchantment>(s => s.Id == transmogItem.SpellItemEnchantmentAllSpecs);
+                        if (spellItemEnchantment != null)
+                            itemVisual = spellItemEnchantment.ItemVisual;
+                    }
+                }
+
+                // Get ItemAppearanceId the default way, either because transmog does not exist or transmog failed.
+                if (itemAppearanceId == 0)
+                {
+                    if (!string.IsNullOrWhiteSpace(item.BonusListIds))
+                    {
+                        var bonusListIds = item.BonusListIds.Trim().Split(' ').Select(int.Parse).ToList();
+                        if (bonusListIds != null && bonusListIds.Any())
                         {
-                            itemAppearanceModifierId = itemBonus.Value0;
+                            var itemBonus = await _db2.GetAsync<ItemBonus>(bonus => bonus.Type == 7 && bonusListIds.Any(bonusId => bonusId == bonus.ParentItemBonusListId));
+                            if (itemBonus != null)
+                            {
+                                itemAppearanceModifierId = itemBonus.Value0;
+                            }
+                        }
+                    }
+
+                    var itemModifiedAppearance = await _db2.GetAsync<ItemModifiedAppearance>(c => c.ItemId == item.ItemEntry && c.ItemAppearanceModifierId == itemAppearanceModifierId);
+                    if (itemModifiedAppearance == null)
+                        continue;
+
+                    itemAppearanceId = itemModifiedAppearance.ItemAppearanceId;
+                }
+
+                if(itemVisual == 0 && equippedItem.Slot.IsWeaponSlot())
+                {
+                    foreach(var enchantment in item.Enchantments.Split(' '))
+                    {
+                        if(int.TryParse(enchantment.Trim(), out var enchantmentId))
+                        {
+                            if(enchantmentId > 0)
+                            {
+                                var spellItemEnchantment = await _db2.GetAsync<SpellItemEnchantment>(s => s.Id == enchantmentId);
+                                if (spellItemEnchantment != null && spellItemEnchantment.ItemVisual > 0)
+                                {
+                                    itemVisual = spellItemEnchantment.ItemVisual;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
 
-                var itemModifiedAppearance = await _db2.GetAsync<ItemModifiedAppearance>(c => c.ItemId == item.ItemEntry && c.ItemAppearanceModifierId == itemAppearanceModifierId);
-                if (itemModifiedAppearance == null)
-                    continue;
-
-                var itemAppearance = await _db2.GetAsync<ItemAppearance>(c => c.Id == itemModifiedAppearance.ItemAppearanceId);
+                var itemAppearance = await _db2.GetAsync<ItemAppearance>(c => c.Id == itemAppearanceId);
                 if (itemAppearance == null)
                     continue;
 
@@ -494,21 +545,21 @@ namespace CreatureCreator.Infrastructure.Services
                         break;
 
                     case CharacterInventorySlots.MAIN_HAND:
-                        result.MainHandItemId = item.ItemEntry;
+                        result.MainHandItemId = itemId;
                         result.MainHandItemAppearanceModifierId = itemAppearanceModifierId;
-                        // TODO: Enchant
+                        result.MainHandItemVisual = itemVisual;
                         break;
 
                     case CharacterInventorySlots.OFF_HAND:
-                        result.OffHandItemId = item.ItemEntry;
+                        result.OffHandItemId = itemId;
                         result.OffHandItemAppearanceModifierId = itemAppearanceModifierId;
-                        // TODO: Enchant
+                        result.OffHandItemVisual = itemVisual;
                         break;
 
                     case CharacterInventorySlots.RANGED:
-                        result.RangedHandItemId = item.ItemEntry;
+                        result.RangedHandItemId = itemId;
                         result.RangedHandItemAppearanceModifierId = itemAppearanceModifierId;
-                        // TODO: Enchant
+                        result.RangedHandItemVisual = itemVisual;
                         break;
                 };
             }

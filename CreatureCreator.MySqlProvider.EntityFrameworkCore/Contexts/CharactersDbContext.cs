@@ -47,6 +47,12 @@ namespace CreatureCreator.MySqlProvider.EntityFrameworkCore.Contexts
             {
                 entity.ToTable("item_instance");
             });
+
+            modelBuilder.Entity<ItemInstanceTransmog>(entity =>
+            {
+                entity.ToTable("item_instance_transmog");
+                entity.HasNoKey();
+            });
         }
     }
 }

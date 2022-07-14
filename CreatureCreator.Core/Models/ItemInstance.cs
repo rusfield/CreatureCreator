@@ -16,6 +16,7 @@ namespace CreatureCreator.Core.Models
         [Column("owner_guid")]
         public int OwnerGuid { get; set; }
         public int ItemEntry { get; set; }
+        public string Enchantments { get; set; }
         public string BonusListIds { get; set; }
     }
 }
