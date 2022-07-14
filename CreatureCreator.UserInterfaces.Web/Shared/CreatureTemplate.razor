@@ -34,18 +34,12 @@
 
     </MudItem>
 
-    <MudItem xs="6" Style="@($"background-image:url('images/models/{Creature.Gender.ToString().ToLower()}/{Creature.Race.ToString().ToLower()}.png'); background-repeat:no-repeat; background-position: center; background-size:contain;")">
+    <MudItem xs="6" Style="@($"background-image:url('images/models/{Creature.Gender.ToString().ToLower()}/{Creature.Race.ToString().Replace("_", "").ToLower()}.png'); background-repeat:no-repeat; background-position: center; background-size:contain;")">
     </MudItem>
 
     <MudItem xs="3">
 
     </MudItem>
-
-
-
-
-
-
 
 
 

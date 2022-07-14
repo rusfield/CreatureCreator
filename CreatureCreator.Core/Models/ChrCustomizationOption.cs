@@ -13,5 +13,6 @@ namespace CreatureCreator.Core.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public ChrModels ChrModelId { get; set; }
+        public int ChrCustomizationCategoryId { get; set; }
     }
 }

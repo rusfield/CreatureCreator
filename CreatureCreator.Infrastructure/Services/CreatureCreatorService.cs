@@ -589,13 +589,16 @@ namespace CreatureCreator.Infrastructure.Services
             };
         }
 
-        public async Task<Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>> GetAvailableCustomizations(DisplayRaces race, Genders gender)
+        public async Task<Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>> GetAvailableCustomizations(DisplayRaces race, Genders gender, bool includeDruidForms = false)
         {
             var chrModel = new ChrModels().ConvertFromRaceAndGender(race, gender);
             var result = new Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>();
             var options = await _db2.GetManyAsync<ChrCustomizationOption>(c => c.ChrModelId == chrModel);
             foreach (var option in options)
             {
+                if (!includeDruidForms && option.IsDruidFormCustomization())
+                    continue;
+
                 var choices = (await _db2.GetManyAsync<ChrCustomizationChoice>(c => c.ChrCustomizationOptionId == option.Id)).ToList();
                 result.Add(new CustomizationOptionDto()
                 {

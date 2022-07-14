@@ -1,4 +1,5 @@
 ﻿@using CreatureCreator.Core.Enums
+@using CreatureCreator.Infrastructure.Extensions
 
 <MudMenu MaxHeight="600" Label="Advanced Placement" Variant="Variant.Filled" AnchorOrigin="@_anchorOrigin" TransformOrigin="@_transformOrigin" Color="Color.Default" Size="Size.Large" ActivationEvent="@MouseEvent.MouseOver">
     <ActivatorContent>
@@ -6,97 +7,12 @@
     </ActivatorContent>
     <ChildContent>
 
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.BloodElf))">
-            <MudImage Src="images/banners/bloodelf.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.DarkIronDwarf))">
-            <MudImage Src="images/banners/darkirondwarf.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Draenei))">
-            <MudImage Src="images/banners/draenei.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Dwarf))">
-            <MudImage Src="images/banners/dwarf.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Gnome))">
-            <MudImage Src="images/banners/gnome.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Goblin))">
-            <MudImage Src="images/banners/goblin.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.HighmountaunTauren))">
-            <MudImage Src="images/banners/highmountaintauren.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Human))">
-            <MudImage Src="images/banners/human.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.KulTiran))">
-            <MudImage Src="images/banners/kultiran.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.LightforgedDraenei))">
-            <MudImage Src="images/banners/lightforgeddraenei.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.MagharOrc))">
-            <MudImage Src="images/banners/magharorc.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Mechagnome))">
-            <MudImage Src="images/banners/mechagnome.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Nightborne))">
-            <MudImage Src="images/banners/nightborne.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.NightElf))">
-            <MudImage Src="images/banners/nightelf.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Orc))">
-            <MudImage Src="images/banners/orc.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Pandaren))">
-            <MudImage Src="images/banners/pandaren.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Tauren))">
-            <MudImage Src="images/banners/tauren.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Troll))">
-            <MudImage Src="images/banners/troll.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Undead))">
-            <MudImage Src="images/banners/undead.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.VoidElf))">
-            <MudImage Src="images/banners/voidelf.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Vulpera))">
-            <MudImage Src="images/banners/vulpera.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.Worgen))">
-            <MudImage Src="images/banners/worgen.png" Height="@_bannerHeight" />
-        </MudMenuItem>
-
-        <MudMenuItem OnClick="@(() => RaceSelected(DisplayRaces.ZandalariTroll))">
-            <MudImage Src="images/banners/zandalaritroll.png" Height="@_bannerHeight" />
-        </MudMenuItem>
+        @foreach (var race in new DisplayRaces().GetPlayableDisplayRaces())
+        {
+            <MudMenuItem OnClick="@(() => RaceSelected(race))" Class="ma-2 rounded" Style="@($"height:56px;width:56px;background-image:url('images/races/{Gender.ToString().ToLower()}/{race.ToString().Replace("_", "").ToLower()}.jpg');background-size:cover;background-position:center")">
+                @*<MudText>@race.ToDisplayString()</MudText>*@
+            </MudMenuItem>
+        }
 
     </ChildContent>
 </MudMenu>
@@ -122,6 +38,5 @@
     {
         await RaceSelectedCallback.InvokeAsync(race);
     }
-
 
 }
