@@ -11,13 +11,16 @@
         @for (int i = 0; i < Math.Min(6, AvailableCustomizations.Count); i++)
         {
             int iNested = i;
-            if (!Creature.Customizations.ContainsKey(AvailableCustomizations.ElementAt(i).Key.Id))
+            int customizationOption = AvailableCustomizations.ElementAt(iNested).Key.Id;
+            int? customizationOptionLookup = CreatureLookup != null && CreatureLookup.Customizations != null && CreatureLookup.Customizations.ContainsKey(customizationOption) ? CreatureLookup.Customizations[customizationOption] : null;
+
+            if (!Creature.Customizations.ContainsKey(customizationOption))
             {
-                Creature.Customizations.Add(AvailableCustomizations.ElementAt(i).Key.Id, AvailableCustomizations.ElementAt(i).Value.First().Id);
+                Creature.Customizations.Add(customizationOption, AvailableCustomizations.ElementAt(iNested).Value.First().Id);
             }
 
-            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="Color.Info" OnClick="@(() => Creature.Customizations[AvailableCustomizations.ElementAt(iNested).Key.Id] = AvailableCustomizations.ElementAt(iNested).Value.First().Id)" Visible="@(Creature.Customizations[AvailableCustomizations.ElementAt(iNested).Key.Id] != AvailableCustomizations.ElementAt(iNested).Value.First().Id)" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
-                <MudSelect T="int" @bind-Value="Creature.Customizations[AvailableCustomizations.ElementAt(iNested).Key.Id]" Label="@(AvailableCustomizations.ElementAt(iNested).Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="Color.Info" OnClick="@(() => SetCustomization(customizationOption, customizationOptionLookup ?? 0))" Visible="@(SetVisibility(customizationOption))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudSelect T="int" @bind-Value="Creature.Customizations[customizationOption]" Label="@(AvailableCustomizations.ElementAt(iNested).Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
                     @foreach (var choice in AvailableCustomizations.ElementAt(iNested).Value)
                     {
                         <MudSelectItem Value="@choice.Id">
@@ -43,39 +46,17 @@
         @for (int i = 6; i < Math.Min(12, AvailableCustomizations.Count - 1); i++)
         {
             int iNested = i;
-            if (!Creature.Customizations.ContainsKey(AvailableCustomizations.ElementAt(i).Key.Id))
+            int customizationOption = AvailableCustomizations.ElementAt(iNested).Key.Id;
+            int? customizationOptionLookup = CreatureLookup != null && CreatureLookup.Customizations != null && CreatureLookup.Customizations.ContainsKey(customizationOption) ? CreatureLookup.Customizations[customizationOption] : null;
+
+            if (!Creature.Customizations.ContainsKey(customizationOption))
             {
-                Creature.Customizations.Add(AvailableCustomizations.ElementAt(i).Key.Id, AvailableCustomizations.ElementAt(i).Value.First().Id);
+                Creature.Customizations.Add(customizationOption, AvailableCustomizations.ElementAt(iNested).Value.First().Id);
             }
 
-            <MudSelect T="int" @bind-Value="Creature.Customizations[AvailableCustomizations.ElementAt(iNested).Key.Id]" Label="@(AvailableCustomizations.ElementAt(iNested).Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
-                @foreach (var choice in AvailableCustomizations.ElementAt(iNested).Value)
-                {
-                    <MudSelectItem Value="@choice.Id">
-                        <MudStack Row="true" Justify="Justify.SpaceBetween">
-                            <MudText>@choice.Name</MudText>
-                            <MudText>(@choice.Id)</MudText>
-                        </MudStack>
-                    </MudSelectItem>
-                }
-            </MudSelect>
-        }
-
-
-    </MudItem>
-
-    @if (AvailableCustomizations.Count > 12)
-    {
-        foreach (var remainingOption in AvailableCustomizations.Skip(12))
-        {
-            if (!Creature.Customizations.ContainsKey(remainingOption.Key.Id))
-            {
-                Creature.Customizations.Add(remainingOption.Key.Id, remainingOption.Value.First().Id);
-            }
-
-            <MudItem xs="3">
-                <MudSelect T="int" @bind-Value="Creature.Customizations[remainingOption.Key.Id]" Label="@(remainingOption.Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
-                    @foreach (var choice in remainingOption.Value)
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="Color.Info" OnClick="@(() => SetCustomization(customizationOption, customizationOptionLookup ?? 0))" Visible="@(SetVisibility(customizationOption))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudSelect T="int" @bind-Value="Creature.Customizations[customizationOption]" Label="@(AvailableCustomizations.ElementAt(iNested).Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+                    @foreach (var choice in AvailableCustomizations.ElementAt(iNested).Value)
                     {
                         <MudSelectItem Value="@choice.Id">
                             <MudStack Row="true" Justify="Justify.SpaceBetween">
@@ -85,6 +66,38 @@
                         </MudSelectItem>
                     }
                 </MudSelect>
+            </MudBadge>
+        }
+
+
+    </MudItem>
+
+    @if (AvailableCustomizations.Count > 12)
+    {
+        foreach (var (remainingOption, iNested) in AvailableCustomizations.Skip(12).Select((v, i) => (v, i + 12)))
+        {
+            int customizationOption = AvailableCustomizations.ElementAt(iNested).Key.Id;
+            int? customizationOptionLookup = CreatureLookup != null && CreatureLookup.Customizations != null && CreatureLookup.Customizations.ContainsKey(customizationOption) ? CreatureLookup.Customizations[customizationOption] : null;
+
+            if (!Creature.Customizations.ContainsKey(remainingOption.Key.Id))
+            {
+                Creature.Customizations.Add(remainingOption.Key.Id, remainingOption.Value.First().Id);
+            }
+
+            <MudItem xs="3">
+                <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="Color.Info" OnClick="@(() => SetCustomization(customizationOption, customizationOptionLookup ?? 0))" Visible="@(SetVisibility(customizationOption))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                    <MudSelect T="int" @bind-Value="Creature.Customizations[customizationOption]" Label="@(AvailableCustomizations.ElementAt(iNested).Key.Name)" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+                        @foreach (var choice in AvailableCustomizations.ElementAt(iNested).Value)
+                        {
+                            <MudSelectItem Value="@choice.Id">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                    <MudText>@choice.Name</MudText>
+                                    <MudText>(@choice.Id)</MudText>
+                                </MudStack>
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudBadge>
             </MudItem>
         }
     }
@@ -98,8 +111,23 @@
     public CreatureDto Creature { get; set; }
 
     [Parameter]
+    public CreatureDto? CreatureLookup { get; set; }
+
+    [Parameter]
     public Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>> AvailableCustomizations { get; set; }
 
+    void SetCustomization(int optionId, int choiceId)
+    {
+        Creature.Customizations[optionId] = choiceId;
+    }
+
+    bool SetVisibility(int optionId)
+    {
+        if (Creature == null || CreatureLookup == null || Creature.Gender != CreatureLookup.Gender || Creature.Race != CreatureLookup.Race || Creature.Customizations == null || CreatureLookup.Customizations == null || !Creature.Customizations.ContainsKey(optionId) || !CreatureLookup.Customizations.ContainsKey(optionId))
+            return false;
+
+        return Creature.Customizations[optionId] != CreatureLookup.Customizations[optionId];
+    }
 
     string cssClass = "pb-2 pt-2";
 }

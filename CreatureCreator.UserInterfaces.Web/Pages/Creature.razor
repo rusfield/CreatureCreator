@@ -12,20 +12,20 @@
     <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-2">
         <MudStack Row="true">
             <MudButton Variant="Variant.Outlined" Color="Color.Info">Item Lookup</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Info" OnClick="@NpcLookup">NPC Lookup</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" OnClick="@CreatureLookup">NPC Lookup</MudButton>
         </MudStack>
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveAsync">Save</MudButton>
     </MudStack>
     <MudPaper>
         <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary" PanelClass="pa-6">
             <MudTabPanel Text="Template">
-                <CreatureTemplate Creature="@creature" />
+                <CreatureTemplate Creature="@creature" CreatureLookup="@creatureLookup" />
             </MudTabPanel>
             <MudTabPanel Text="Customization">
-                <CreatureCustomization Creature="@creature" AvailableCustomizations="@availableCustomizations" />
+                <CreatureCustomization Creature="@creature" CreatureLookup="@creatureLookup" AvailableCustomizations="@availableCustomizations" />
             </MudTabPanel>
             <MudTabPanel Text="Equipment">
-                <CreatureEquipment Creature="@creature" />
+                <CreatureEquipment Creature="@creature" CreatureLookup="@creatureLookup" />
             </MudTabPanel>
         </MudTabs>
     </MudPaper>
@@ -38,6 +38,8 @@
 
 
     CreatureDto? creature;
+    CreatureDto? creatureLookup;
+
     Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>> availableCustomizations;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -63,8 +65,10 @@
         }
     }
 
-    async Task NpcLookup()
+    async Task CreatureLookup()
     {
-        await JSRuntime.InvokeVoidAsync("open", "/creature", "_blank", "height=200,width=200");
+        var dialog = DialogService.Show<LoadCreature>("", new DialogOptions() { DisableBackdropClick = true });
+        var result = await dialog.Result;
+        creatureLookup = (CreatureDto)result.Data;
     }
 }

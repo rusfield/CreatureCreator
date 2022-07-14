@@ -9,15 +9,23 @@ namespace Local_Function
     {
         static void Main(string[] args)
         {
-            var data = new List<string>()
-                {
-                    "ID,Value[0],Value[1],Value[2],Value[3],ParentItemBonusListID,Type,OrderIndex",
-                    "970,1,2,0,0,497,6,2",
-                    "971,1,1,0,0,1,7,2"
-                };
+            var classA = new TestClass();
+            classA.ListProperty = new List<string>() { "Value A" };
 
-            var result = PredicateTest<Item>(c => c.Type == 7, data);
+            var classB = new TestClass()
+            {
+                ListProperty = classA.ListProperty
+            };
 
+            classA.ListProperty.Add("Value B");
+
+            Console.WriteLine($"{classA.ListProperty.Count}");
+            Console.WriteLine($"{classB.ListProperty.Count}");
+        }
+
+        class TestClass
+        {
+            public List<string> ListProperty { get; set; }
         }
 
         public static List<T> PredicateTest<T>(Expression<Func<T, bool>> predicate, List<string> data)

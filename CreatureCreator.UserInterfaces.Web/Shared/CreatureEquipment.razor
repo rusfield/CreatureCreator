@@ -4,7 +4,7 @@
     <MudItem xs="3">
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudNumericField @bind-Value="Creature.HeadItemDisplayInfoId" Label="Head" Variant="Variant.Outlined" HideSpinButtons="true" Adornment="Adornment.End" AdornmentColor="Color.Secondary" OnAdornmentClick="@(() => Creature.HeadItemDisplayInfoId = 123)" AdornmentIcon="@Icons.Filled.ArrowCircleLeft" />
+            <MudNumericField @bind-Value="Creature.HeadItemDisplayInfoId" Label="Head" Variant="Variant.Outlined" HideSpinButtons="true" />
             <MudImage Src="@($"images/items/{(Creature.HeadItemDisplayInfoId != null ? "equipped" : "empty")}/head.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
@@ -121,6 +121,9 @@
 @code {
     [Parameter]
     public CreatureDto Creature { get; set; }
+
+    [Parameter]
+    public CreatureDto? CreatureLookup { get; set; }
 
     string cssClass = "pb-2 pt-2";
 
