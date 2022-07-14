@@ -1,10 +1,14 @@
 ﻿@using CreatureCreator.Infrastructure.DtoModels
+@using CreatureCreator.Core.Enums
+
 <MudGrid>
     <!--Left side -->
     <MudItem xs="3">
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudNumericField @bind-Value="Creature.HeadItemDisplayInfoId" Label="Head" Variant="Variant.Outlined" HideSpinButtons="true" />
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetColor(ArmorSlots.HEAD))" OnClick="@(() => SetArmor(ArmorSlots.HEAD))" Visible="@(SetVisibility(ArmorSlots.HEAD))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.HeadItemDisplayInfoId" Label="Head" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
             <MudImage Src="@($"images/items/{(Creature.HeadItemDisplayInfoId != null ? "equipped" : "empty")}/head.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
@@ -124,6 +128,36 @@
 
     [Parameter]
     public CreatureDto? CreatureLookup { get; set; }
+
+    void SetArmor(ArmorSlots armor)
+    {
+        if (CreatureLookup != null)
+            Creature.HeadItemDisplayInfoId = CreatureLookup.HeadItemDisplayInfoId;
+    }
+
+    bool SetVisibility(ArmorSlots armor)
+    {
+        if (CreatureLookup == null)
+            return false;
+        switch (armor)
+        {
+            case ArmorSlots.HEAD:
+                return Creature.HeadItemDisplayInfoId != CreatureLookup.HeadItemDisplayInfoId;
+        }
+        return false;
+    }
+
+    Color SetColor(ArmorSlots armor)
+    {
+        switch (armor)
+        {
+            case ArmorSlots.HEAD:
+                return CreatureLookup?.HeadItemDisplayInfoId != null ? Color.Info : Color.Warning;
+        }
+
+
+        return Color.Info;
+    }
 
     string cssClass = "pb-2 pt-2";
 
