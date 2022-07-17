@@ -45,6 +45,7 @@
     </DialogContent>
 </MudDialog>
 
+
 @code {
     [CascadingParameter]
     MudDialogInstance LoadCreatureDialog { get; set; }
@@ -64,15 +65,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if(CreatureId != null)
+        if (CreatureId != null)
         {
             await CreatureIdDebounce(CreatureId.ToString());
         }
-        else if(CreatureDisplayId != null)
+        else if (CreatureDisplayId != null)
         {
             await CreatureDisplayIdDebounce(CreatureDisplayId.ToString());
         }
-        else if(CharacterName != null)
+        else if (CharacterName != null)
         {
             await CharacterNameDebounce(CharacterName);
         }

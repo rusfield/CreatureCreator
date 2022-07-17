@@ -90,9 +90,9 @@ namespace CreatureCreator.Infrastructure.Helpers
                 ItemId2 = creature.OffHandItemId ?? 0,
                 AppearanceModId2 = creature.OffHandItemAppearanceModifierId ?? 0,
                 ItemVisual2 = creature.OffHandItemVisual ?? 0,
-                ItemId3 = creature.RangedHandItemId ?? 0,
-                AppearanceModId3 = creature.RangedHandItemAppearanceModifierId ?? 0,
-                ItemVisual3 = creature.RangedHandItemVisual ?? 0,
+                ItemId3 = creature.RangedItemId ?? 0,
+                AppearanceModId3 = creature.RangedItemAppearanceModifierId ?? 0,
+                ItemVisual3 = creature.RangedItemVisual ?? 0,
                 VerifiedBuild = _verifiedBuild
             };
         }
@@ -107,9 +107,9 @@ namespace CreatureCreator.Infrastructure.Helpers
             creatureEquipTemplate.AppearanceModId2 = creature.OffHandItemAppearanceModifierId ?? 0;
             creatureEquipTemplate.ItemVisual2 = creature.OffHandItemVisual ?? 0;
 
-            creatureEquipTemplate.ItemId3 = creature.RangedHandItemId ?? 0;
-            creatureEquipTemplate.AppearanceModId3 = creature.RangedHandItemAppearanceModifierId ?? 0;
-            creatureEquipTemplate.ItemVisual3 = creature.RangedHandItemVisual ?? 0;
+            creatureEquipTemplate.ItemId3 = creature.RangedItemId ?? 0;
+            creatureEquipTemplate.AppearanceModId3 = creature.RangedItemAppearanceModifierId ?? 0;
+            creatureEquipTemplate.ItemVisual3 = creature.RangedItemVisual ?? 0;
 
             return creatureEquipTemplate;
         }

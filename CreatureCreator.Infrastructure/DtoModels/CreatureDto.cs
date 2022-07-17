@@ -42,9 +42,9 @@ namespace CreatureCreator.Infrastructure.DtoModels
         public int? OffHandItemId { get; set; }
         public int? OffHandItemVisual { get; set; }
         public int? OffHandItemAppearanceModifierId { get; set; }
-        public int? RangedHandItemId { get; set; }
-        public int? RangedHandItemVisual { get; set; }
-        public int? RangedHandItemAppearanceModifierId { get; set; }
+        public int? RangedItemId { get; set; }
+        public int? RangedItemVisual { get; set; }
+        public int? RangedItemAppearanceModifierId { get; set; }
 
         public Dictionary<int, int> Customizations { get; set; }
 

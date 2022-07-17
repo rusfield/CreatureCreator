@@ -6,35 +6,45 @@
     <MudItem xs="3">
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
-            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetColor(ArmorSlots.HEAD))" OnClick="@(() => SetArmor(ArmorSlots.HEAD))" Visible="@(SetVisibility(ArmorSlots.HEAD))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.HEAD))" OnClick="@(() => SetArmor(ArmorSlots.HEAD))" Visible="@(SetArmorVisibility(ArmorSlots.HEAD))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.HeadItemDisplayInfoId" Label="Head" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
-            <MudImage Src="@($"images/items/{(Creature.HeadItemDisplayInfoId != null ? "equipped" : "empty")}/head.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudImage Src="@($"images/items/{(Creature.HeadItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.HEAD.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudNumericField @bind-Value="Creature.ShouldersItemDisplayInfoId" Label="Shoulders" Variant="Variant.Outlined" HideSpinButtons="true" />
-            <MudImage Src="@($"images/items/{(Creature.ShouldersItemDisplayInfoId != null ? "equipped" : "empty")}/shoulders.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.SHOULDERS))" OnClick="@(() => SetArmor(ArmorSlots.SHOULDERS))" Visible="@(SetArmorVisibility(ArmorSlots.SHOULDERS))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.ShouldersItemDisplayInfoId" Label="Shoulders" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
+            <MudImage Src="@($"images/items/{(Creature.ShouldersItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.SHOULDERS.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudNumericField @bind-Value="Creature.ChestItemDisplayInfoId" Label="Chest" Variant="Variant.Outlined" HideSpinButtons="true" />
-            <MudImage Src="@($"images/items/{(Creature.ChestItemDisplayInfoId != null ? "equipped" : "empty")}/chest.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.CHEST))" OnClick="@(() => SetArmor(ArmorSlots.CHEST))" Visible="@(SetArmorVisibility(ArmorSlots.CHEST))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.ChestItemDisplayInfoId" Label="Chest" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
+            <MudImage Src="@($"images/items/{(Creature.ChestItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.CHEST.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudNumericField @bind-Value="Creature.HandsItemDisplayInfoId" Label="Hands" Variant="Variant.Outlined" HideSpinButtons="true" />
-            <MudImage Src="@($"images/items/{(Creature.HandsItemDisplayInfoId != null ? "equipped" : "empty")}/hands.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.HANDS))" OnClick="@(() => SetArmor(ArmorSlots.HANDS))" Visible="@(SetArmorVisibility(ArmorSlots.HANDS))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.HandsItemDisplayInfoId" Label="Hands" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
+            <MudImage Src="@($"images/items/{(Creature.HandsItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.HANDS.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudNumericField @bind-Value="Creature.LegsItemDisplayInfoId" Label="Legs" Variant="Variant.Outlined" HideSpinButtons="true" />
-            <MudImage Src="@($"images/items/{(Creature.LegsItemDisplayInfoId != null ? "equipped" : "empty")}/legs.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.LEGS))" OnClick="@(() => SetArmor(ArmorSlots.LEGS))" Visible="@(SetArmorVisibility(ArmorSlots.LEGS))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.LegsItemDisplayInfoId" Label="Legs" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
+            <MudImage Src="@($"images/items/{(Creature.LegsItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.LEGS.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudNumericField @bind-Value="Creature.FeetItemDisplayInfoId" Label="Feet" Variant="Variant.Outlined" HideSpinButtons="true" />
-            <MudImage Src="@($"images/items/{(Creature.FeetItemDisplayInfoId != null ? "equipped" : "empty")}/feet.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.FEET))" OnClick="@(() => SetArmor(ArmorSlots.FEET))" Visible="@(SetArmorVisibility(ArmorSlots.FEET))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.FeetItemDisplayInfoId" Label="Feet" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
+            <MudImage Src="@($"images/items/{(Creature.FeetItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.FEET.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
     </MudItem>
@@ -47,72 +57,102 @@
     <MudItem xs="3">
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudImage Src="@($"images/items/{(Creature.BackItemDisplayInfoId != null ? "equipped" : "empty")}/back.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.BackItemDisplayInfoId" Label="Back" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.BackItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.BACK.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.BACK))" OnClick="@(() => SetArmor(ArmorSlots.BACK))" Visible="@(SetArmorVisibility(ArmorSlots.BACK))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.BackItemDisplayInfoId" Label="Back" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudImage Src="@($"images/items/{(Creature.TabardItemDisplayInfoId != null ? "equipped" : "empty")}/tabard.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.TabardItemDisplayInfoId" Label="Tabard" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.TabardItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.TABARD.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.TABARD))" OnClick="@(() => SetArmor(ArmorSlots.TABARD))" Visible="@(SetArmorVisibility(ArmorSlots.TABARD))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.TabardItemDisplayInfoId" Label="Tabard" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudImage Src="@($"images/items/{(Creature.ShirtItemDisplayInfoId != null ? "equipped" : "empty")}/shirt.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.ShirtItemDisplayInfoId" Label="Shirt" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.ShirtItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.SHIRT.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.SHIRT))" OnClick="@(() => SetArmor(ArmorSlots.SHIRT))" Visible="@(SetArmorVisibility(ArmorSlots.SHIRT))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.ShirtItemDisplayInfoId" Label="Shirt" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudImage Src="@($"images/items/{(Creature.WaistItemDisplayInfoId != null ? "equipped" : "empty")}/waist.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.WaistItemDisplayInfoId" Label="Waist" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.WaistItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.WAIST.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.WAIST))" OnClick="@(() => SetArmor(ArmorSlots.WAIST))" Visible="@(SetArmorVisibility(ArmorSlots.WAIST))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.WaistItemDisplayInfoId" Label="Waist" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudImage Src="@($"images/items/{(Creature.WristsItemDisplayInfoId != null ? "equipped" : "empty")}/wrists.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.WristsItemDisplayInfoId" Label="Wrists" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.WristsItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.WRISTS.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.WRISTS))" OnClick="@(() => SetArmor(ArmorSlots.WRISTS))" Visible="@(SetArmorVisibility(ArmorSlots.WRISTS))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.WristsItemDisplayInfoId" Label="Wrists" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
-            <MudImage Src="@($"images/items/{(Creature.QuiverItemDisplayInfoId != null ? "equipped" : "empty")}/quiver.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.QuiverItemDisplayInfoId" Label="Quiver" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.QuiverItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.QUIVER.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.QUIVER))" OnClick="@(() => SetArmor(ArmorSlots.QUIVER))" Visible="@(SetArmorVisibility(ArmorSlots.QUIVER))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.QuiverItemDisplayInfoId" Label="Quiver" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
     </MudItem>
 
     <MudItem xs="4" Class="pr-16">
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
-            <MudImage Src="@($"images/items/{(Creature.MainHandItemId != null ? "equipped" : "empty")}/mainhand.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.MainHandItemId" Label="Main Hand" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.MainHandItemId != null ? "equipped" : "empty")}/{WeaponSlots.MAIN_HAND.ToString().Replace("_", "").ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.MAIN_HAND, 0))" OnClick="@(() => SetWeapon(WeaponSlots.MAIN_HAND, 0))" Visible="@(SetWeaponVisibility(WeaponSlots.MAIN_HAND, 0))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.MainHandItemId" Label="Main Hand" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
-            <MudImage Src="@($"images/items/{(Creature.MainHandItemId != null ? "equipped" : "empty")}/mainhand.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
-            <MudNumericField @bind-Value="Creature.MainHandItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
-            <MudNumericField @bind-Value="Creature.MainHandItemVisual" Label="Enchant" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.MainHandItemId != null ? "equipped" : "empty")}/{WeaponSlots.MAIN_HAND.ToString().Replace("_", "").ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.MAIN_HAND, 1))" OnClick="@(() => SetWeapon(WeaponSlots.MAIN_HAND, 1))" Visible="@(SetWeaponVisibility(WeaponSlots.MAIN_HAND, 1))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.MainHandItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
+            </MudBadge>
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.MAIN_HAND, 2))" OnClick="@(() => SetWeapon(WeaponSlots.MAIN_HAND, 2))" Visible="@(SetWeaponVisibility(WeaponSlots.MAIN_HAND, 2))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.MainHandItemVisual" Label="Enchant" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
     </MudItem>
 
     <MudItem xs="4" Class="pl-8 pr-8">
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
-            <MudImage Src="@($"images/items/{(Creature.OffHandItemId != null ? "equipped" : "empty")}/offhand.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.OffHandItemId" Label="Off Hand" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.OffHandItemId != null ? "equipped" : "empty")}/{WeaponSlots.OFF_HAND.ToString().Replace("_", "").ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.OFF_HAND, 0))" OnClick="@(() => SetWeapon(WeaponSlots.OFF_HAND, 0))" Visible="@(SetWeaponVisibility(WeaponSlots.OFF_HAND, 0))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.OffHandItemId" Label="Off Hand" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
-            <MudImage Src="@($"images/items/{(Creature.OffHandItemId != null ? "equipped" : "empty")}/offhand.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
-            <MudNumericField @bind-Value="Creature.OffHandItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
-            <MudNumericField @bind-Value="Creature.OffHandItemVisual" Label="Enchant" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.OffHandItemId != null ? "equipped" : "empty")}/{WeaponSlots.OFF_HAND.ToString().Replace("_", "").ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.OFF_HAND, 1))" OnClick="@(() => SetWeapon(WeaponSlots.OFF_HAND, 1))" Visible="@(SetWeaponVisibility(WeaponSlots.OFF_HAND, 1))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.OffHandItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
+            </MudBadge>
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.OFF_HAND, 2))" OnClick="@(() => SetWeapon(WeaponSlots.OFF_HAND, 2))" Visible="@(SetWeaponVisibility(WeaponSlots.OFF_HAND, 2))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.OffHandItemVisual" Label="Enchant" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
     </MudItem>
 
     <MudItem xs="4" Class="pl-16">
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
-            <MudImage Src="@($"images/items/{(Creature.RangedHandItemId != null ? "equipped" : "empty")}/ranged.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
-            <MudNumericField @bind-Value="Creature.RangedHandItemId" Label="Ranged" Variant="Variant.Outlined" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.RangedItemId != null ? "equipped" : "empty")}/{WeaponSlots.RANGED.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.RANGED, 0))" OnClick="@(() => SetWeapon(WeaponSlots.RANGED, 0))" Visible="@(SetWeaponVisibility(WeaponSlots.RANGED, 0))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.RangedItemId" Label="Ranged" Variant="Variant.Outlined" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
         <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
-            <MudImage Src="@($"images/items/{(Creature.RangedHandItemId != null ? "equipped" : "empty")}/ranged.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
-            <MudNumericField @bind-Value="Creature.RangedHandItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
-            <MudNumericField @bind-Value="Creature.RangedHandItemVisual" Label="Enchant" HideSpinButtons="true" />
+            <MudImage Src="@($"images/items/{(Creature.RangedItemId != null ? "equipped" : "empty")}/{WeaponSlots.RANGED.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" Style="visibility:hidden" />
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.RANGED, 1))" OnClick="@(() => SetWeapon(WeaponSlots.RANGED, 1))" Visible="@(SetWeaponVisibility(WeaponSlots.RANGED, 1))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.RangedItemAppearanceModifierId" Label="Mod" HideSpinButtons="true" />
+            </MudBadge>
+            <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetWeaponColor(WeaponSlots.RANGED, 2))" OnClick="@(() => SetWeapon(WeaponSlots.RANGED, 2))" Visible="@(SetWeaponVisibility(WeaponSlots.RANGED, 2))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
+                <MudNumericField @bind-Value="Creature.RangedItemVisual" Label="Enchant" HideSpinButtons="true" />
+            </MudBadge>
         </MudStack>
 
     </MudItem>
@@ -129,36 +169,178 @@
     [Parameter]
     public CreatureDto? CreatureLookup { get; set; }
 
+    string cssClass = "pb-2 pt-2";
+
     void SetArmor(ArmorSlots armor)
     {
         if (CreatureLookup != null)
-            Creature.HeadItemDisplayInfoId = CreatureLookup.HeadItemDisplayInfoId;
+        {
+            switch (armor)
+            {
+                case ArmorSlots.HEAD:
+                    Creature.HeadItemDisplayInfoId = CreatureLookup.HeadItemDisplayInfoId;
+                    break;
+                case ArmorSlots.SHOULDERS:
+                    Creature.ShouldersItemDisplayInfoId = CreatureLookup.ShouldersItemDisplayInfoId;
+                    break;
+                case ArmorSlots.CHEST:
+                    Creature.ChestItemDisplayInfoId = CreatureLookup.ChestItemDisplayInfoId;
+                    break;
+                case ArmorSlots.BACK:
+                    Creature.BackItemDisplayInfoId = CreatureLookup.BackItemDisplayInfoId;
+                    break;
+                case ArmorSlots.SHIRT:
+                    Creature.ShirtItemDisplayInfoId = CreatureLookup.ShirtItemDisplayInfoId;
+                    break;
+                case ArmorSlots.TABARD:
+                    Creature.TabardItemDisplayInfoId = CreatureLookup.TabardItemDisplayInfoId;
+                    break;
+                case ArmorSlots.WAIST:
+                    Creature.WaistItemDisplayInfoId = CreatureLookup.WaistItemDisplayInfoId;
+                    break;
+                case ArmorSlots.WRISTS:
+                    Creature.WristsItemDisplayInfoId = CreatureLookup.WristsItemDisplayInfoId;
+                    break;
+                case ArmorSlots.HANDS:
+                    Creature.HandsItemDisplayInfoId = CreatureLookup.HandsItemDisplayInfoId;
+                    break;
+                case ArmorSlots.LEGS:
+                    Creature.LegsItemDisplayInfoId = CreatureLookup.LegsItemDisplayInfoId;
+                    break;
+                case ArmorSlots.FEET:
+                    Creature.FeetItemDisplayInfoId = CreatureLookup.FeetItemDisplayInfoId;
+                    break;
+                case ArmorSlots.QUIVER:
+                    Creature.QuiverItemDisplayInfoId = CreatureLookup.QuiverItemDisplayInfoId;
+                    break;
+            }
+        }
     }
 
-    bool SetVisibility(ArmorSlots armor)
+    void SetWeapon(WeaponSlots weapon, int column)
+    {
+        if (CreatureLookup != null)
+        {
+            switch (weapon, column)
+            {
+                case (WeaponSlots.MAIN_HAND, 0):
+                    Creature.MainHandItemId = CreatureLookup.MainHandItemId;
+                    break;
+                case (WeaponSlots.MAIN_HAND, 1):
+                    Creature.MainHandItemAppearanceModifierId = CreatureLookup.MainHandItemAppearanceModifierId;
+                    break;
+                case (WeaponSlots.MAIN_HAND, 2):
+                    Creature.MainHandItemVisual = CreatureLookup.MainHandItemVisual;
+                    break;
+
+                case (WeaponSlots.OFF_HAND, 0):
+                    Creature.OffHandItemId = CreatureLookup.OffHandItemId;
+                    break;
+                case (WeaponSlots.OFF_HAND, 1):
+                    Creature.OffHandItemAppearanceModifierId = CreatureLookup.OffHandItemAppearanceModifierId;
+                    break;
+                case (WeaponSlots.OFF_HAND, 2):
+                    Creature.OffHandItemVisual = CreatureLookup.OffHandItemVisual;
+                    break;
+
+                case (WeaponSlots.RANGED, 0):
+                    Creature.RangedItemId = CreatureLookup.RangedItemId;
+                    break;
+                case (WeaponSlots.RANGED, 1):
+                    Creature.RangedItemAppearanceModifierId = CreatureLookup.RangedItemAppearanceModifierId;
+                    break;
+                case (WeaponSlots.RANGED, 2):
+                    Creature.RangedItemVisual = CreatureLookup.RangedItemVisual;
+                    break;
+            }
+
+
+        }
+    }
+
+    bool SetArmorVisibility(ArmorSlots armor)
     {
         if (CreatureLookup == null)
             return false;
-        switch (armor)
+
+        return (armor) switch
         {
-            case ArmorSlots.HEAD:
-                return Creature.HeadItemDisplayInfoId != CreatureLookup.HeadItemDisplayInfoId;
-        }
-        return false;
+            ArmorSlots.HEAD => Creature.HeadItemDisplayInfoId != CreatureLookup.HeadItemDisplayInfoId,
+            ArmorSlots.SHOULDERS => Creature.ShouldersItemDisplayInfoId != CreatureLookup.ShouldersItemDisplayInfoId,
+            ArmorSlots.BACK => Creature.BackItemDisplayInfoId != CreatureLookup.BackItemDisplayInfoId,
+            ArmorSlots.CHEST => Creature.ChestItemDisplayInfoId != CreatureLookup.ChestItemDisplayInfoId,
+            ArmorSlots.TABARD => Creature.TabardItemDisplayInfoId != CreatureLookup.TabardItemDisplayInfoId,
+            ArmorSlots.SHIRT => Creature.ShirtItemDisplayInfoId != CreatureLookup.ShirtItemDisplayInfoId,
+            ArmorSlots.WAIST => Creature.WaistItemDisplayInfoId != CreatureLookup.WaistItemDisplayInfoId,
+            ArmorSlots.WRISTS => Creature.WristsItemDisplayInfoId != CreatureLookup.WristsItemDisplayInfoId,
+            ArmorSlots.HANDS => Creature.HandsItemDisplayInfoId != CreatureLookup.HandsItemDisplayInfoId,
+            ArmorSlots.LEGS => Creature.LegsItemDisplayInfoId != CreatureLookup.LegsItemDisplayInfoId,
+            ArmorSlots.FEET => Creature.FeetItemDisplayInfoId != CreatureLookup.FeetItemDisplayInfoId,
+            ArmorSlots.QUIVER => Creature.QuiverItemDisplayInfoId != CreatureLookup.QuiverItemDisplayInfoId,
+            _ => false
+        };
     }
 
-    Color SetColor(ArmorSlots armor)
+    bool SetWeaponVisibility(WeaponSlots weapon, int column)
     {
-        switch (armor)
+        if (CreatureLookup == null)
+            return false;
+
+        return (weapon, column) switch
         {
-            case ArmorSlots.HEAD:
-                return CreatureLookup?.HeadItemDisplayInfoId != null ? Color.Info : Color.Warning;
-        }
+            (WeaponSlots.MAIN_HAND, 0) => Creature.MainHandItemId != CreatureLookup?.MainHandItemId,
+            (WeaponSlots.MAIN_HAND, 1) => Creature.MainHandItemAppearanceModifierId != CreatureLookup?.MainHandItemAppearanceModifierId,
+            (WeaponSlots.MAIN_HAND, 2) => Creature.MainHandItemVisual != CreatureLookup?.MainHandItemVisual,
 
+            (WeaponSlots.OFF_HAND, 0) => Creature.OffHandItemId != CreatureLookup?.OffHandItemId,
+            (WeaponSlots.OFF_HAND, 1) => Creature.OffHandItemAppearanceModifierId != CreatureLookup?.OffHandItemAppearanceModifierId,
+            (WeaponSlots.OFF_HAND, 2) => Creature.OffHandItemVisual != CreatureLookup?.OffHandItemVisual,
 
-        return Color.Info;
+            (WeaponSlots.RANGED, 0) => Creature.RangedItemId != CreatureLookup?.RangedItemId,
+            (WeaponSlots.RANGED, 1) => Creature.RangedItemAppearanceModifierId != CreatureLookup?.RangedItemAppearanceModifierId,
+            (WeaponSlots.RANGED, 2) => Creature.RangedItemVisual != CreatureLookup?.RangedItemVisual,
+
+            _ => false
+        };
     }
 
-    string cssClass = "pb-2 pt-2";
+    Color SetArmorColor(ArmorSlots armor)
+    {
+        return (armor) switch
+        {
+            ArmorSlots.HEAD => CreatureLookup?.HeadItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.SHOULDERS => CreatureLookup?.ShouldersItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.BACK => CreatureLookup?.BackItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.CHEST => CreatureLookup?.ChestItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.TABARD => CreatureLookup?.TabardItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.SHIRT => CreatureLookup?.ShirtItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.WAIST => CreatureLookup?.WaistItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.WRISTS => CreatureLookup?.WristsItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.HANDS => CreatureLookup?.HandsItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.LEGS => CreatureLookup?.LegsItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.FEET => CreatureLookup?.FeetItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            ArmorSlots.QUIVER => CreatureLookup?.QuiverItemDisplayInfoId != null ? Color.Info : Color.Warning,
+            _ => Color.Info
+        };
+    }
 
-}
+    Color SetWeaponColor(WeaponSlots weapon, int column)
+    {
+        return (weapon, column) switch
+        {
+            (WeaponSlots.MAIN_HAND, 0) => CreatureLookup?.MainHandItemId != null && CreatureLookup?.MainHandItemId != 0 ? Color.Info : Color.Warning,
+            (WeaponSlots.MAIN_HAND, 1) => CreatureLookup?.MainHandItemAppearanceModifierId != null && CreatureLookup?.MainHandItemAppearanceModifierId != 0 ? Color.Info : Color.Warning,
+            (WeaponSlots.MAIN_HAND, 2) => CreatureLookup?.MainHandItemVisual != null && CreatureLookup?.MainHandItemVisual != 0 ? Color.Info : Color.Warning,
+
+            (WeaponSlots.OFF_HAND, 0) => CreatureLookup?.OffHandItemId != null && CreatureLookup?.OffHandItemId != 0 ? Color.Info : Color.Warning,
+            (WeaponSlots.OFF_HAND, 1) => CreatureLookup?.OffHandItemAppearanceModifierId != null && CreatureLookup?.OffHandItemAppearanceModifierId != 0 ? Color.Info : Color.Warning,
+            (WeaponSlots.OFF_HAND, 2) => CreatureLookup?.OffHandItemVisual != null && CreatureLookup?.OffHandItemVisual != 0 ? Color.Info : Color.Warning,
+
+            (WeaponSlots.RANGED, 0) => CreatureLookup?.RangedItemId != null && CreatureLookup?.RangedItemId != 0 ? Color.Info : Color.Warning,
+            (WeaponSlots.RANGED, 1) => CreatureLookup?.RangedItemAppearanceModifierId != null && CreatureLookup?.RangedItemAppearanceModifierId != 0 ? Color.Info : Color.Warning,
+            (WeaponSlots.RANGED, 2) => CreatureLookup?.RangedItemVisual != null && CreatureLookup?.RangedItemVisual != 0 ? Color.Info : Color.Warning,
+
+            _ => Color.Info
+        };
+    }
+        }

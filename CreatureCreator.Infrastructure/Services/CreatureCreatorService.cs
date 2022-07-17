@@ -368,11 +368,11 @@ namespace CreatureCreator.Infrastructure.Services
                         result.OffHandItemVisual = creatureEquipTemplate.ItemVisual2;
 
                     if (creatureEquipTemplate.ItemId3 > 0)
-                        result.RangedHandItemId = creatureEquipTemplate.ItemId3;
+                        result.RangedItemId = creatureEquipTemplate.ItemId3;
                     if (creatureEquipTemplate.AppearanceModId3 > 0)
-                        result.RangedHandItemAppearanceModifierId = creatureEquipTemplate.AppearanceModId3;
+                        result.RangedItemAppearanceModifierId = creatureEquipTemplate.AppearanceModId3;
                     if (creatureEquipTemplate.ItemVisual3 > 0)
-                        result.RangedHandItemVisual = creatureEquipTemplate.ItemVisual3;
+                        result.RangedItemVisual = creatureEquipTemplate.ItemVisual3;
                 }
             }
             progressCallback("Done", "Returning creature", 100);
@@ -557,9 +557,9 @@ namespace CreatureCreator.Infrastructure.Services
                         break;
 
                     case CharacterInventorySlots.RANGED:
-                        result.RangedHandItemId = itemId;
-                        result.RangedHandItemAppearanceModifierId = itemAppearanceModifierId;
-                        result.RangedHandItemVisual = itemVisual;
+                        result.RangedItemId = itemId;
+                        result.RangedItemAppearanceModifierId = itemAppearanceModifierId;
+                        result.RangedItemVisual = itemVisual;
                         break;
                 };
             }

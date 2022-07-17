@@ -11,8 +11,8 @@
 
     <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-2">
         <MudStack Row="true">
-            <MudButton Variant="Variant.Outlined" Color="Color.Info">Item Lookup</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Info" OnClick="@CreatureLookup">NPC Lookup</MudButton>
+            <MudButton Variant="@(itemLookup == null? Variant.Outlined : Variant.Filled)" Color="Color.Info">Item Lookup</MudButton>
+            <MudButton Variant="@(creatureLookup == null? Variant.Outlined : Variant.Filled)" Color="Color.Info" OnClick="@CreatureLookup">Creature Lookup</MudButton>
         </MudStack>
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveAsync">Save</MudButton>
     </MudStack>
@@ -39,6 +39,7 @@
 
     CreatureDto? creature;
     CreatureDto? creatureLookup;
+    int? itemLookup;
 
     Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>> availableCustomizations;
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -67,8 +68,9 @@
 
     async Task CreatureLookup()
     {
-        var dialog = DialogService.Show<LoadCreature>("", new DialogOptions() { DisableBackdropClick = true });
+        var dialog = DialogService.Show<LoadCreature>("", new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true });
         var result = await dialog.Result;
-        creatureLookup = (CreatureDto)result.Data;
+        if (result.Data != null)
+            creatureLookup = (CreatureDto)result.Data;
     }
 }
