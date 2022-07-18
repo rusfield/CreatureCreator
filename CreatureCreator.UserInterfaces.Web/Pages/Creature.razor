@@ -1,6 +1,7 @@
 ﻿@page "/creature/{CreatureId:int?}"
 @using CreatureCreator.Infrastructure.DtoModels
 @using CreatureCreator.Infrastructure.Services
+@using CreatureCreator.UserInterfaces.Web.Shared.Creature
 
 @inject IDialogService DialogService
 @inject CreatureCreatorService Service
@@ -15,8 +16,8 @@
             <MudButton Variant="@(creatureLookup == null? Variant.Outlined : Variant.Filled)" Color="Color.Info" OnClick="@CreatureLookup">Creature Lookup</MudButton>
         </MudStack>
         <MudStack Row="true">
-            <MudButton Variant="Variant.Outlined" Color="Color.Success">ID: @creature.Id</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveAsync">Save</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Success">@creature.Id</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveAsync">@(creature.IsUpdate ? "Update" : "Save")</MudButton>
         </MudStack>
     </MudStack>
     <MudPaper>
@@ -47,6 +48,8 @@
     CreatureDto? creatureLookup;
     int? itemLookup;
 
+    bool loading = false;
+
     Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>> availableCustomizations;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -54,7 +57,7 @@
         {
             var parameters = new DialogParameters();
             parameters.Add("CreatureId", CreatureId);
-            var dialog = DialogService.Show<LoadCreature>("", parameters, new DialogOptions() { DisableBackdropClick = true });
+            var dialog = DialogService.Show<LoadCreature_Dialog>("", parameters, new DialogOptions() { DisableBackdropClick = true, CloseOnEscapeKey = false, NoHeader=true });
             var result = await dialog.Result;
             creature = (CreatureDto)result.Data;
 
@@ -68,13 +71,18 @@
     {
         if (creature != null)
         {
-            await Service.SaveCreatureAsync(creature);
+            var options = new DialogOptions { CloseOnEscapeKey = false, DisableBackdropClick=true, NoHeader=true };
+            var parameters = new DialogParameters();
+            parameters.Add("Creature", creature);
+            var dialog = DialogService.Show<SaveCreature_Dialog>("", parameters, options);
+            var result = await dialog.Result;
+            creature.IsUpdate = creature.IsUpdate || (bool)result.Data;
         }
     }
 
     async Task CreatureLookup()
     {
-        var dialog = DialogService.Show<LoadCreature>("", new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true });
+        var dialog = DialogService.Show<LoadCreature_Dialog>("", new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true });
         var result = await dialog.Result;
         if (result.Data != null)
             creatureLookup = (CreatureDto)result.Data;

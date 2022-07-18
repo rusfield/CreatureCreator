@@ -49,16 +49,16 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateLevel,
+                    Name = ValidationHelper.ValidateCreatureId,
                     Status = ValidationStatuses.ERROR,
-                    Description = $"The level is not within the configurated range. It should be equal or greater than {_idRangeFrom} and lower than {_idRangeTo}"
+                    Description = $"The Id is not within the configurated range. It should be equal or greater than {_idRangeFrom} and lower than {_idRangeTo}"
                 });
             }
 
             return result;
         }
 
-        public async Task<int> GetNextIdAsync(bool quickScan = true)
+        public async Task<int> GetNextCreatureIdAsync(bool quickScan = true)
         {
             // TODO:
             // quickScan TRUE will always find the top next Id.
@@ -71,6 +71,17 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 var maxId = creaturesIdsInRange.Max(c => c.Entry) + 1;
                 id = (int)(Math.Ceiling(maxId / _idSize) * _idSize);
+            }
+            return id;
+        }
+
+        public async Task<int> GetNextHotfixIdAsync(bool quickScan = true)
+        {
+            int id = _idRangeFrom;
+            var hotfixIdsInRange = await _mySql.GetManyAsync<HotfixData>(c => c.Id >= _idRangeFrom && c.Id < _idRangeTo);
+            if (hotfixIdsInRange.Count() > 0)
+            {
+                return hotfixIdsInRange.Max(c => c.Id) + 1;
             }
             return id;
         }
@@ -101,12 +112,18 @@ namespace CreatureCreator.Infrastructure.Services
                 Description = hotfixesDbOk ? "" : "Unable to connect to Hotfixes DB. Make sure MySQL is running and that the Schema name is set correctly."
             });
 
-
             return result;
         }
 
         public async Task DeleteCreatureAsync(int creatureId)
         {
+            /*
+             * This method is also used to update a creature.
+             * Adding more tables to delete that are handled from other programs
+             * (for example smart_scripts) may cause unintended loss of data during
+             * an update. Be careful :)
+             */
+
             var creatureTemplate = await _mySql.GetAsync<CreatureTemplate>(c => c.Entry == creatureId);
             var creatureTemplateModel = await _mySql.GetAsync<CreatureTemplateModel>(c => c.CreatureId == creatureId);
             var creatureEquipTemplate = await _mySql.GetAsync<CreatureEquipTemplate>(c => c.CreatureId == creatureId);
@@ -145,33 +162,40 @@ namespace CreatureCreator.Infrastructure.Services
                 await _mySql.DeleteAsync(creatureDisplayInfo);
 
             if (hotfixData != null && hotfixData.Count() > 0)
-                await _mySql.DeleteManyAsync(hotfixData);
+            {
+                foreach (var hotfix in hotfixData)
+                {
+                    hotfix.Status = HotfixStatus.INVALID;
+                }
+                await _mySql.UpdateManyAsync(hotfixData);
+            }
         }
 
         public async Task SaveCreatureAsync(CreatureDto creature)
         {
+            int hotfixId = await GetNextHotfixIdAsync();
             var existingCreature = await _mySql.GetAsync<CreatureTemplate>(c => c.Entry == creature.Id);
             var modelHelper = new ModelHelper(_verifiedBuild);
             if (existingCreature != null)
             {
-                // Update
+                // Update (Remove, disable hotfixes and re-add)
+                await DeleteCreatureAsync(creature.Id);
             }
-            else
-            {
-                // Add
-                var hotfixes = new List<HotfixData>();
-                await _mySql.AddAsync(modelHelper.CreateCreatureTemplate(creature));
-                await _mySql.AddAsync(modelHelper.CreateCreatureTemplateModel(creature));
-                await _mySql.AddAsync(modelHelper.CreateCreatureEquipTemplate(creature));
-                await _mySql.AddAsync(modelHelper.CreateCreatureModelInfo(creature));
 
-                await _mySql.AddAsync(modelHelper.CreateCreatureDisplayInfoExtra(creature, hotfixes));
-                await _mySql.AddManyAsync(modelHelper.CreateNpcModelItemSlotDisplayInfos(creature, hotfixes));
-                await _mySql.AddManyAsync(modelHelper.CreateCreatureDisplayInfoOptions(creature, hotfixes));
-                await _mySql.AddAsync(modelHelper.CreateCreatureDisplayInfo(creature, hotfixes));
+            // Add
+            var hotfixes = new List<HotfixData>();
+            await _mySql.AddAsync(modelHelper.CreateCreatureTemplate(creature));
+            await _mySql.AddAsync(modelHelper.CreateCreatureTemplateModel(creature));
+            await _mySql.AddAsync(modelHelper.CreateCreatureEquipTemplate(creature));
+            await _mySql.AddAsync(modelHelper.CreateCreatureModelInfo(creature));
 
-                await _mySql.AddManyAsync(hotfixes);
-            }
+            await _mySql.AddAsync(modelHelper.CreateCreatureDisplayInfoExtra(creature, hotfixes, hotfixId));
+            await _mySql.AddManyAsync(modelHelper.CreateNpcModelItemSlotDisplayInfos(creature, hotfixes, hotfixId));
+            await _mySql.AddManyAsync(modelHelper.CreateCreatureDisplayInfoOptions(creature, hotfixes, hotfixId));
+            await _mySql.AddAsync(modelHelper.CreateCreatureDisplayInfo(creature, hotfixes, hotfixId));
+
+            await _mySql.AddManyAsync(hotfixes);
+
         }
 
         public async Task<List<DashboardCreatureDto>> GetCreatures()
@@ -210,8 +234,13 @@ namespace CreatureCreator.Infrastructure.Services
                 var creature = await GetCreatureByDisplayIdAsync(creatureTemplateModel.CreatureDisplayId, progressCallback);
                 if (creature != null)
                 {
-                    // Override the automatically generated Id
-                    creature.Id = creatureId;
+                    if (creatureId < _idRangeTo && creatureId >= _idRangeFrom)
+                    {
+                        // Override the automatically generated Id, as this is most likely an update.
+                        creature.Id = creatureId;
+                        creature.IsUpdate = true;
+                    }
+
                     return creature;
                 }
             }
@@ -220,6 +249,7 @@ namespace CreatureCreator.Infrastructure.Services
 
         public async Task<CreatureDto?> GetCreatureByDisplayIdAsync(int creatureDisplayId, Action<string, string, int>? progressCallback = null)
         {
+
             if (progressCallback == null)
                 progressCallback = ConsoleProgressCallback;
 
@@ -230,7 +260,7 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 progressCallback("Creature", $"Retrieving Creature Template", 15);
                 creatureTemplate = await _mySql.GetAsync<CreatureTemplate>(c => c.Entry == creatureTemplateModel.CreatureId);
-                if(creatureTemplate != null)
+                if (creatureTemplate != null)
                     progressCallback("Creature", $"Found Creature Template ({creatureTemplate.Entry})", 15);
             }
 
@@ -244,7 +274,7 @@ namespace CreatureCreator.Infrastructure.Services
 
             var result = new CreatureDto()
             {
-                Id = await GetNextIdAsync(),
+                Id = await GetNextCreatureIdAsync(),
                 CreatureType = creatureTemplate != null ? creatureTemplate.Type : CreatureTypes.HUMANOID,
                 Faction = creatureTemplate != null ? creatureTemplate.Faction : 17,
                 CreatureUnitClass = creatureTemplate != null ? creatureTemplate.UnitClass : CreatureUnitClasses.WARRIOR,
@@ -262,7 +292,8 @@ namespace CreatureCreator.Infrastructure.Services
                 UnitFlags = (UnitFlags)(creatureTemplate?.UnitFlags ?? 0),
                 UnitFlags2 = (UnitFlags2)(creatureTemplate?.UnitFlags2 ?? 0),
                 UnitFlags3 = (UnitFlags3)(creatureTemplate?.UnitFlags3 ?? 0),
-                IsCustomizable = false
+                IsCustomizable = false,
+                IsUpdate = false
             };
 
             progressCallback("Creature", $"Retrieving Display Info Extra", 30);
@@ -418,7 +449,7 @@ namespace CreatureCreator.Infrastructure.Services
             var result = new CreatureDto()
             {
                 CreatureType = CreatureTypes.HUMANOID,
-                Id = await GetNextIdAsync(),
+                Id = await GetNextCreatureIdAsync(),
                 Customizations = customizations,
                 Gender = character.Gender,
                 Level = character.Level,
@@ -433,7 +464,8 @@ namespace CreatureCreator.Infrastructure.Services
                 FlagsExtra = FlagsExtra.NONE,
                 HealthModifier = 1,
                 DamageModifier = 1,
-                IsCustomizable = true
+                IsCustomizable = true,
+                IsUpdate = false
             };
 
             progressCallback("Equipment", "Retrieving equipment", 50);
@@ -495,13 +527,13 @@ namespace CreatureCreator.Infrastructure.Services
                     itemAppearanceId = itemModifiedAppearance.ItemAppearanceId;
                 }
 
-                if(itemVisual == 0 && equippedItem.Slot.IsWeaponSlot())
+                if (itemVisual == 0 && equippedItem.Slot.IsWeaponSlot())
                 {
-                    foreach(var enchantment in item.Enchantments.Split(' '))
+                    foreach (var enchantment in item.Enchantments.Split(' '))
                     {
-                        if(int.TryParse(enchantment.Trim(), out var enchantmentId))
+                        if (int.TryParse(enchantment.Trim(), out var enchantmentId))
                         {
-                            if(enchantmentId > 0)
+                            if (enchantmentId > 0)
                             {
                                 var spellItemEnchantment = await _db2.GetAsync<SpellItemEnchantment>(s => s.Id == enchantmentId);
                                 if (spellItemEnchantment != null && spellItemEnchantment.ItemVisual > 0)
@@ -593,7 +625,7 @@ namespace CreatureCreator.Infrastructure.Services
                 progressCallback = ConsoleProgressCallback;
 
             progressCallback("Creature", "Preparing creature", 50);
-            var id = await GetNextIdAsync();
+            var id = await GetNextCreatureIdAsync();
             progressCallback("Done", "Creature returned", 100);
             return new CreatureDto()
             {

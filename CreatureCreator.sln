@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserInterfaces", "UserInter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreatureCreator.UserInterfaces.Web", "CreatureCreator.UserInterfaces.Web\CreatureCreator.UserInterfaces.Web.csproj", "{7D06ACC9-43A6-4C9F-A46A-5A924D0A0668}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreatureCreator.UserInterfaces.Console", "CreatureCreator.UserInterfaces.Console\CreatureCreator.UserInterfaces.Console.csproj", "{C1DE8548-A73E-4528-B372-0D6A7768B1F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreatureCreator.UserInterfaces.Console", "CreatureCreator.UserInterfaces.Console\CreatureCreator.UserInterfaces.Console.csproj", "{C1DE8548-A73E-4528-B372-0D6A7768B1F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

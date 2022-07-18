@@ -40,16 +40,21 @@ namespace CreatureCreator.Infrastructure.Helpers
                 Type = creature.CreatureType,
                 UnitClass = creature.CreatureUnitClass,
                 Scale = creature.Scale,
+                HealthModifier = creature.HealthModifier,
+                DamageModifier = creature.DamageModifier,
+                UnitFlags = (long)creature.UnitFlags,
+                UnitFlags2 = (long)creature.UnitFlags2,
+                UnitFlags3 = (long)creature.UnitFlags3,
+                FlagsExtra = (long)creature.FlagsExtra,
+
                 VerifiedBuild = _verifiedBuild,
 
                 // Custom default values
                 AiName = "SmartAI",
-                ArmorModifier = 1,
-                DamageModifier = 1,
+
                 BaseAttackTime = 2000,
                 BaseVariance = 1,
                 ExperienceModifier = 1,
-                HealthModifier = 1,
                 HealthModifierExtra = 1,
                 HoverHeight = 1,
                 ManaModifier = 1,
@@ -147,12 +152,11 @@ namespace CreatureCreator.Infrastructure.Helpers
             return creatureModelInfo;
         }
 
-        public CreatureDisplayInfo CreateCreatureDisplayInfo(CreatureDto creature, List<HotfixData> hotfixes)
+        public CreatureDisplayInfo CreateCreatureDisplayInfo(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
         {
-            int hotfixValue = 4200;
             hotfixes.Add(new HotfixData()
             {
-                Id = creature.Id + hotfixValue,
+                Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
                 RecordId = creature.Id,
                 Status = HotfixStatus.VALID,
                 TableHash = TableHashCreatureDisplayInfo,
@@ -174,10 +178,9 @@ namespace CreatureCreator.Infrastructure.Helpers
             };
         }
 
-        public List<NpcModelItemSlotDisplayInfo> CreateNpcModelItemSlotDisplayInfos(CreatureDto creature, List<HotfixData> hotfixes)
+        public List<NpcModelItemSlotDisplayInfo> CreateNpcModelItemSlotDisplayInfos(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
         {
             int npcModelId = creature.Id;
-            int hotfixValue = 4000;
 
             var result = new List<NpcModelItemSlotDisplayInfo>();
             result.Add(new NpcModelItemSlotDisplayInfo()
@@ -269,7 +272,7 @@ namespace CreatureCreator.Infrastructure.Helpers
             {
                 hotfixes.Add(new HotfixData()
                 {
-                    Id = item.Id + hotfixValue,
+                    Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
                     RecordId = item.Id,
                     Status = HotfixStatus.VALID,
                     TableHash = TableHashNpcModelItemSlotDisplayInfo,
@@ -281,9 +284,8 @@ namespace CreatureCreator.Infrastructure.Helpers
             return result;
         }
 
-        public List<CreatureDisplayInfoOption> CreateCreatureDisplayInfoOptions(CreatureDto creature, List<HotfixData> hotfixes)
+        public List<CreatureDisplayInfoOption> CreateCreatureDisplayInfoOptions(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
         {
-            int hotfixValue = 0;
             int creatureDisplayInfoExtraId = creature.Id;
             var result = new List<CreatureDisplayInfoOption>();
             foreach (var customization in creature.Customizations)
@@ -297,7 +299,7 @@ namespace CreatureCreator.Infrastructure.Helpers
                 });
                 hotfixes.Add(new HotfixData()
                 {
-                    Id = creature.Id + customization.Key + hotfixValue,
+                    Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
                     RecordId = creature.Id + customization.Key,
                     Status = HotfixStatus.VALID,
                     UniqueId = creature.Id,
@@ -308,12 +310,11 @@ namespace CreatureCreator.Infrastructure.Helpers
             return result;
         }
 
-        public CreatureDisplayInfoExtra CreateCreatureDisplayInfoExtra(CreatureDto creature, List<HotfixData> hotfixes)
+        public CreatureDisplayInfoExtra CreateCreatureDisplayInfoExtra(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
         {
-            int hotfixValue = 4100;
             hotfixes.Add(new HotfixData()
             {
-                Id = creature.Id + hotfixValue,
+                Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
                 RecordId = creature.Id,
                 Status = HotfixStatus.VALID,
                 UniqueId = creature.Id,

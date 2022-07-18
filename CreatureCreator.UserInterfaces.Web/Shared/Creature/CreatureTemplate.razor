@@ -99,6 +99,9 @@
         _unitFlags3 = ((long)Creature.UnitFlags3).ToString();
 
         _unitFlagsSelection = Creature.UnitFlags.ToValues().Select(v => v.ToString());
+        _unitFlags2Selection = Creature.UnitFlags2.ToValues().Select(v => v.ToString());
+        _unitFlags3Selection = Creature.UnitFlags3.ToValues().Select(v => v.ToString());
+        _flagsExtraSelection = Creature.FlagsExtra.ToValues().Select(v => v.ToString());
         base.OnInitialized();
     }
 

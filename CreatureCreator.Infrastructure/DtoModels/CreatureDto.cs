@@ -54,6 +54,7 @@ namespace CreatureCreator.Infrastructure.DtoModels
         public Dictionary<int, int> Customizations { get; set; }
 
         public bool IsCustomizable { get; set; }
+        public bool IsUpdate { get; set; }
 
     }
 }

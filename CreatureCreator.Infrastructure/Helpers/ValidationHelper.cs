@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CreatureCreator.Infrastructure.DtoModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace CreatureCreator.Infrastructure.Helpers
     public class ValidationHelper
     {
         public const string ValidateLevel = "Level";
+        public const string ValidateCreatureId = "CreatureId";
         public const string ValidateWorldDb = "World DB";
         public const string ValidateHotfixesDb = "Hotfixes DB";
         public const string ValidateCharactersDb = "Characters DB";

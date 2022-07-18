@@ -1,0 +1,49 @@
+﻿@using CreatureCreator.Infrastructure.DtoModels
+@using CreatureCreator.Infrastructure.Services
+
+@inject CreatureCreatorService Service
+
+
+<MudDialog>
+    <DialogContent>
+        @if (loading)
+        {
+            <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+                <MudText Typo="Typo.h6" Color="Color.Primary">Saving... Hold on.</MudText>
+            </MudStack>
+        }
+        else
+        {
+            <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudIcon Icon="@Icons.Filled.Check" Color="Color.Success" Style="height:128px;width:128px" />
+                <MudText Typo="Typo.h5" Color="Color.Primary">@($"{Creature.Id} saved.")</MudText>
+                <MudText Typo="Typo.h6" Color="Color.Primary">Restart World Server to use it.</MudText>
+            </MudStack>
+        }
+
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Ok">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public CreatureDto Creature { get; set; }
+
+    bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Service.SaveCreatureAsync(Creature);
+        loading = false;
+        Creature.IsUpdate = true;
+        await base.OnInitializedAsync();
+    }
+
+    void Ok() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}
