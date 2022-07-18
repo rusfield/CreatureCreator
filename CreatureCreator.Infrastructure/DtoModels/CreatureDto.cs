@@ -20,7 +20,12 @@ namespace CreatureCreator.Infrastructure.DtoModels
         public DisplayRaces Race { get; set; }
         public CreatureTypes CreatureType { get; set; }
         public CreatureUnitClasses CreatureUnitClass { get; set; }
-
+        public UnitFlags UnitFlags { get; set; }
+        public UnitFlags2 UnitFlags2 { get; set; }
+        public UnitFlags3 UnitFlags3 { get; set; }
+        public FlagsExtra FlagsExtra { get; set; }
+        public double HealthModifier { get; set; }
+        public double DamageModifier { get; set; }
         // Armor
         public int? HeadItemDisplayInfoId { get; set; }
         public int? ShouldersItemDisplayInfoId { get; set; }
@@ -47,6 +52,8 @@ namespace CreatureCreator.Infrastructure.DtoModels
         public int? RangedItemAppearanceModifierId { get; set; }
 
         public Dictionary<int, int> Customizations { get; set; }
+
+        public bool IsCustomizable { get; set; }
 
     }
 }

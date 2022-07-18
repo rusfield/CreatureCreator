@@ -230,6 +230,8 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 progressCallback("Creature", $"Retrieving Creature Template", 15);
                 creatureTemplate = await _mySql.GetAsync<CreatureTemplate>(c => c.Entry == creatureTemplateModel.CreatureId);
+                if(creatureTemplate != null)
+                    progressCallback("Creature", $"Found Creature Template ({creatureTemplate.Entry})", 15);
             }
 
             progressCallback("Creature", $"Retrieving Display Info", 20);
@@ -240,13 +242,39 @@ namespace CreatureCreator.Infrastructure.Services
                 return null;
             }
 
+            var result = new CreatureDto()
+            {
+                Id = await GetNextIdAsync(),
+                CreatureType = creatureTemplate != null ? creatureTemplate.Type : CreatureTypes.HUMANOID,
+                Faction = creatureTemplate != null ? creatureTemplate.Faction : 17,
+                CreatureUnitClass = creatureTemplate != null ? creatureTemplate.UnitClass : CreatureUnitClasses.WARRIOR,
+                Gender = displayInfo.Gender,
+                Race = DisplayRaces.NONE,
+                Customizations = new Dictionary<int, int>(),
+                Level = creatureTemplate != null && creatureTemplate.MaxLevel > 0 ? creatureTemplate.MaxLevel : 30,
+                Name = creatureTemplate?.Name,
+                SubName = creatureTemplate?.SubName,
+                Scale = creatureTemplate?.Scale ?? 1.0,
+                Rank = creatureTemplate?.Rank ?? Ranks.NORMAL,
+                HealthModifier = creatureTemplate?.HealthModifier ?? 1,
+                DamageModifier = creatureTemplate?.DamageModifier ?? 1,
+                FlagsExtra = (FlagsExtra)(creatureTemplate?.FlagsExtra ?? 0),
+                UnitFlags = (UnitFlags)(creatureTemplate?.UnitFlags ?? 0),
+                UnitFlags2 = (UnitFlags2)(creatureTemplate?.UnitFlags2 ?? 0),
+                UnitFlags3 = (UnitFlags3)(creatureTemplate?.UnitFlags3 ?? 0),
+                IsCustomizable = false
+            };
+
             progressCallback("Creature", $"Retrieving Display Info Extra", 30);
             var displayInfoExtra = await _mySql.GetAsync<CreatureDisplayInfoExtra>(c => c.Id == displayInfo.ExtendedDisplayInfoId) ?? await _db2.GetAsync<CreatureDisplayInfoExtra>(c => c.Id == displayInfo.ExtendedDisplayInfoId);
             if (displayInfoExtra == null)
             {
-                progressCallback("Failed", $"Display Info Extra for Display Id {creatureDisplayId} not found", 100);
-                return null;
+                progressCallback("Creature", $"Display Info Extra not found", 100);
+                return result;
             }
+
+            result.Race = displayInfoExtra.DisplayRaceId;
+            result.IsCustomizable = true;
 
             progressCallback("Customizations", $"Retrieving available customizations", 40);
             var availableCustomizations = await GetAvailableCustomizations(displayInfoExtra.DisplayRaceId, displayInfo.Gender);
@@ -274,22 +302,7 @@ namespace CreatureCreator.Infrastructure.Services
                     customizations.Add(availableCustomization.Key.Id, availableCustomization.Value.First().Id);
                 }
             }
-
-            var result = new CreatureDto()
-            {
-                Id = await GetNextIdAsync(),
-                CreatureType = creatureTemplate != null ? creatureTemplate.Type : CreatureTypes.HUMANOID,
-                Faction = creatureTemplate != null ? creatureTemplate.Faction : 17,
-                CreatureUnitClass = creatureTemplate != null ? creatureTemplate.UnitClass : CreatureUnitClasses.WARRIOR,
-                Gender = displayInfo.Gender,
-                Race = displayInfoExtra.DisplayRaceId,
-                Customizations = customizations,
-                Level = creatureTemplate != null ? creatureTemplate.MaxLevel : 30,
-                Name = creatureTemplate != null ? creatureTemplate.Name : null,
-                SubName = creatureTemplate != null ? creatureTemplate.SubName : null,
-                Scale = creatureTemplate != null ? creatureTemplate.Scale : 1.0,
-                Rank = creatureTemplate != null ? creatureTemplate.Rank : Ranks.NORMAL
-            };
+            result.Customizations = customizations;
 
             progressCallback("Equipment", $"Retrieving equipment", 80);
             var hotfixEquipment = await _mySql.GetManyAsync<NpcModelItemSlotDisplayInfo>(npc => npc.NpcModelId == displayInfoExtra.Id);
@@ -413,7 +426,14 @@ namespace CreatureCreator.Infrastructure.Services
                 Rank = Ranks.NORMAL,
                 Name = character.Name,
                 CreatureUnitClass = CreatureUnitClasses.WARRIOR,
-                Race = character.Race
+                Race = character.Race,
+                UnitFlags = UnitFlags.NONE,
+                UnitFlags2 = UnitFlags2.NONE,
+                UnitFlags3 = UnitFlags3.NONE,
+                FlagsExtra = FlagsExtra.NONE,
+                HealthModifier = 1,
+                DamageModifier = 1,
+                IsCustomizable = true
             };
 
             progressCallback("Equipment", "Retrieving equipment", 50);
@@ -591,8 +611,11 @@ namespace CreatureCreator.Infrastructure.Services
 
         public async Task<Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>> GetAvailableCustomizations(DisplayRaces race, Genders gender, bool includeDruidForms = false)
         {
-            var chrModel = new ChrModels().ConvertFromRaceAndGender(race, gender);
             var result = new Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>();
+            var chrModel = new ChrModels().ConvertFromRaceAndGender(race, gender);
+            if (chrModel == null)
+                return result;
+
             var options = await _db2.GetManyAsync<ChrCustomizationOption>(c => c.ChrModelId == chrModel);
             foreach (var option in options)
             {

@@ -14,19 +14,25 @@
             <MudButton Variant="@(itemLookup == null? Variant.Outlined : Variant.Filled)" Color="Color.Info">Item Lookup</MudButton>
             <MudButton Variant="@(creatureLookup == null? Variant.Outlined : Variant.Filled)" Color="Color.Info" OnClick="@CreatureLookup">Creature Lookup</MudButton>
         </MudStack>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveAsync">Save</MudButton>
+        <MudStack Row="true">
+            <MudButton Variant="Variant.Outlined" Color="Color.Success">ID: @creature.Id</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveAsync">Save</MudButton>
+        </MudStack>
     </MudStack>
     <MudPaper>
         <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary" PanelClass="pa-6">
             <MudTabPanel Text="Template">
                 <CreatureTemplate Creature="@creature" CreatureLookup="@creatureLookup" />
             </MudTabPanel>
-            <MudTabPanel Text="Customization">
-                <CreatureCustomization Creature="@creature" CreatureLookup="@creatureLookup" AvailableCustomizations="@availableCustomizations" />
-            </MudTabPanel>
-            <MudTabPanel Text="Equipment">
-                <CreatureEquipment Creature="@creature" CreatureLookup="@creatureLookup" />
-            </MudTabPanel>
+            @if (creature.IsCustomizable)
+            {
+                <MudTabPanel Text="Customization">
+                    <CreatureCustomization Creature="@creature" CreatureLookup="@creatureLookup" AvailableCustomizations="@availableCustomizations" />
+                </MudTabPanel>
+                <MudTabPanel Text="Equipment">
+                    <CreatureEquipment Creature="@creature" CreatureLookup="@creatureLookup" />
+                </MudTabPanel>
+            }
         </MudTabs>
     </MudPaper>
 }

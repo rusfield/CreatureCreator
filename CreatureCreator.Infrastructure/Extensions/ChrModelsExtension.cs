@@ -9,7 +9,7 @@ namespace CreatureCreator.Infrastructure.Extensions
 {
     public static class ChrModelsExtension
     {
-        public static ChrModels ConvertFromRaceAndGender(this ChrModels chrModel, DisplayRaces race, Genders gender)
+        public static ChrModels? ConvertFromRaceAndGender(this ChrModels chrModel, DisplayRaces race, Genders gender)
         {
             return (race, gender) switch
             {
@@ -87,7 +87,7 @@ namespace CreatureCreator.Infrastructure.Extensions
                 (DisplayRaces.MAGHAR_ORC, Genders.Female) => ChrModels.MAGHAR_ORC_FEMALE,
                 (DisplayRaces.MECHAGNOME, Genders.Male) => ChrModels.MECHAGNOME_MALE,
                 (DisplayRaces.MECHAGNOME, Genders.Female) => ChrModels.MECHAGNOME_FEMALE,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => null
             };
         }
     }

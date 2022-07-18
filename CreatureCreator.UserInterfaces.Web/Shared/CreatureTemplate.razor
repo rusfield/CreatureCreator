@@ -1,10 +1,11 @@
 ﻿@using CreatureCreator.Core.Enums
 @using CreatureCreator.Infrastructure.DtoModels
+@using CreatureCreator.Infrastructure.Extensions
 @inherits MudComponentBase
 
 <MudGrid>
     <MudItem xs="3">
-        <MudNumericField @bind-Value="Creature.Id" Label="ID" Variant="Variant.Outlined" HideSpinButtons="true" Class="@cssClass" />
+        <MudNumericField @bind-Value="Creature.Faction" Label="Faction" Variant="Variant.Outlined" HideSpinButtons="true" Class="@cssClass" />
         <MudNumericField @bind-Value="Creature.Level" Label="Level" HideSpinButtons="true" Variant="Variant.Outlined" Class="@cssClass" />
         <MudSelect T="Ranks" @bind-Value="Creature.Rank" Label="Rank" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
             <MudSelectItem Value="@(Ranks.LESSER)">Lesser</MudSelectItem>
@@ -38,6 +39,32 @@
     </MudItem>
 
     <MudItem xs="3">
+        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags))" @bind-Value="_unitFlags" @bind-SelectedValues="_unitFlagsSelection" Label="Unit Flags" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@cssClass">
+            @foreach (UnitFlags flag in Enum.GetValues<UnitFlags>())
+            {
+                <MudSelectItem Value="@(flag.ToString())">@flag</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags2))" @bind-Value="_unitFlags2" @bind-SelectedValues="_unitFlags2Selection" Label="Unit Flags 2" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@cssClass">
+            @foreach (UnitFlags2 flag in Enum.GetValues<UnitFlags2>())
+            {
+                <MudSelectItem Value="@(flag.ToString())">@flag</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags3))" @bind-Value="_unitFlags3" @bind-SelectedValues="_unitFlags3Selection" Label="Unit Flags 3" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@cssClass">
+            @foreach (UnitFlags3 flag in Enum.GetValues<UnitFlags3>())
+            {
+                <MudSelectItem Value="@(flag.ToString())">@flag</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetFlagsExtra))" @bind-Value="_flagsExtra" @bind-SelectedValues="_flagsExtraSelection" Label="Flags Extra" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@cssClass">
+            @foreach (FlagsExtra flag in Enum.GetValues<FlagsExtra>())
+            {
+                <MudSelectItem Value="@(flag.ToString())">@flag</MudSelectItem>
+            }
+        </MudSelect>
+        <MudNumericField @bind-Value="Creature.HealthModifier" Label="Health Modifier" Variant="Variant.Outlined" HideSpinButtons="true" Class="@cssClass" />
+        <MudNumericField @bind-Value="Creature.DamageModifier" Label="Damage Modifier" Variant="Variant.Outlined" HideSpinButtons="true" Class="@cssClass" />
 
     </MudItem>
 
@@ -63,6 +90,61 @@
 
     [Parameter]
     public CreatureDto? CreatureLookup { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _flagsExtra = ((long)Creature.FlagsExtra).ToString();
+        _unitFlags = ((long)Creature.UnitFlags).ToString();
+        _unitFlags2 = ((long)Creature.UnitFlags2).ToString();
+        _unitFlags3 = ((long)Creature.UnitFlags3).ToString();
+
+        _unitFlagsSelection = Creature.UnitFlags.ToValues().Select(v => v.ToString());
+        base.OnInitialized();
+    }
+
+    string _flagsExtra = "0";
+    string _unitFlags = "0";
+    string _unitFlags2 = "0";
+    string _unitFlags3 = "0";
+    IEnumerable<string> _flagsExtraSelection = new List<string>();
+    IEnumerable<string> _unitFlagsSelection = new List<string>();
+    IEnumerable<string> _unitFlags2Selection = new List<string>();
+    IEnumerable<string> _unitFlags3Selection = new List<string>();
+
+    string SetFlagsExtra(IEnumerable<string> selection)
+    {
+        var flags = string.Join(",", selection);
+        if (selection.Count() > 0)
+            Creature.FlagsExtra = (FlagsExtra)Enum.Parse<FlagsExtra>(flags);
+
+        return ((long)Creature.FlagsExtra).ToString();
+    }
+    string SetUnitFlags(IEnumerable<string> selection)
+    {
+        var flags = string.Join(",", selection);
+        if (selection.Count() > 0)
+            Creature.UnitFlags = (UnitFlags)Enum.Parse<UnitFlags>(flags);
+
+        return ((long)Creature.UnitFlags).ToString();
+    }
+    string SetUnitFlags2(IEnumerable<string> selection)
+    {
+        var flags = string.Join(",", selection);
+        if (selection.Count() > 0)
+            Creature.UnitFlags2 = (UnitFlags2)Enum.Parse<UnitFlags2>(flags);
+
+        return ((long)Creature.UnitFlags2).ToString();
+    }
+    string SetUnitFlags3(IEnumerable<string> selection)
+    {
+        var flags = string.Join(",", selection);
+        if (selection.Count() > 0)
+            Creature.UnitFlags3 = (UnitFlags3)Enum.Parse<UnitFlags3>(flags);
+
+        return ((long)Creature.UnitFlags3).ToString();
+    }
+
+
 
     string cssClass = "pb-2 pt-2";
 

@@ -39,6 +39,15 @@ namespace CreatureCreator.Core.Models
         public double DamageModifier { get; set; }
         public double ExperienceModifier { get; set; }
 
+        [Column("unit_flags")]
+        public long UnitFlags { get; set; }
+        [Column("unit_flags2")]
+        public long UnitFlags2 { get; set; }
+        [Column("unit_flags3")]
+        public long UnitFlags3 { get; set; }
+        [Column("flags_extra")]
+        public long FlagsExtra { get; set; }
+
 
         public int VerifiedBuild { get; set; }
 

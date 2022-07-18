@@ -12,35 +12,35 @@
             <MudImage Src="@($"images/items/{(Creature.HeadItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.HEAD.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.SHOULDERS))" OnClick="@(() => SetArmor(ArmorSlots.SHOULDERS))" Visible="@(SetArmorVisibility(ArmorSlots.SHOULDERS))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.ShouldersItemDisplayInfoId" Label="Shoulders" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
             <MudImage Src="@($"images/items/{(Creature.ShouldersItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.SHOULDERS.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.CHEST))" OnClick="@(() => SetArmor(ArmorSlots.CHEST))" Visible="@(SetArmorVisibility(ArmorSlots.CHEST))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.ChestItemDisplayInfoId" Label="Chest" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
             <MudImage Src="@($"images/items/{(Creature.ChestItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.CHEST.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.HANDS))" OnClick="@(() => SetArmor(ArmorSlots.HANDS))" Visible="@(SetArmorVisibility(ArmorSlots.HANDS))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.HandsItemDisplayInfoId" Label="Hands" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
             <MudImage Src="@($"images/items/{(Creature.HandsItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.HANDS.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.LEGS))" OnClick="@(() => SetArmor(ArmorSlots.LEGS))" Visible="@(SetArmorVisibility(ArmorSlots.LEGS))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.LegsItemDisplayInfoId" Label="Legs" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
             <MudImage Src="@($"images/items/{(Creature.LegsItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.LEGS.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.FEET))" OnClick="@(() => SetArmor(ArmorSlots.FEET))" Visible="@(SetArmorVisibility(ArmorSlots.FEET))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.FeetItemDisplayInfoId" Label="Feet" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
@@ -56,42 +56,42 @@
     <!-- Right side-->
     <MudItem xs="3">
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudImage Src="@($"images/items/{(Creature.BackItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.BACK.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.BACK))" OnClick="@(() => SetArmor(ArmorSlots.BACK))" Visible="@(SetArmorVisibility(ArmorSlots.BACK))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.BackItemDisplayInfoId" Label="Back" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudImage Src="@($"images/items/{(Creature.TabardItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.TABARD.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.TABARD))" OnClick="@(() => SetArmor(ArmorSlots.TABARD))" Visible="@(SetArmorVisibility(ArmorSlots.TABARD))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.TabardItemDisplayInfoId" Label="Tabard" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudImage Src="@($"images/items/{(Creature.ShirtItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.SHIRT.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.SHIRT))" OnClick="@(() => SetArmor(ArmorSlots.SHIRT))" Visible="@(SetArmorVisibility(ArmorSlots.SHIRT))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.ShirtItemDisplayInfoId" Label="Shirt" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudImage Src="@($"images/items/{(Creature.WaistItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.WAIST.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.WAIST))" OnClick="@(() => SetArmor(ArmorSlots.WAIST))" Visible="@(SetArmorVisibility(ArmorSlots.WAIST))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.WaistItemDisplayInfoId" Label="Waist" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudImage Src="@($"images/items/{(Creature.WristsItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.WRISTS.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.WRISTS))" OnClick="@(() => SetArmor(ArmorSlots.WRISTS))" Visible="@(SetArmorVisibility(ArmorSlots.WRISTS))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.WristsItemDisplayInfoId" Label="Wrists" Variant="Variant.Outlined" HideSpinButtons="true" />
             </MudBadge>
         </MudStack>
 
-        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true" Class="@cssClass">
+        <MudStack Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Row="true">
             <MudImage Src="@($"images/items/{(Creature.QuiverItemDisplayInfoId != null ? "equipped" : "empty")}/{ArmorSlots.QUIVER.ToString().ToLower()}.png")" Elevation="10" Class="rounded-lg" Height="47" Width="47" />
             <MudBadge Origin="Origin.CenterRight" Overlap="true" Icon="@Icons.Filled.ArrowBack" Color="@(SetArmorColor(ArmorSlots.QUIVER))" OnClick="@(() => SetArmor(ArmorSlots.QUIVER))" Visible="@(SetArmorVisibility(ArmorSlots.QUIVER))" Style="width:100%" Class="@(cssClass + " cursor-pointer")">
                 <MudNumericField @bind-Value="Creature.QuiverItemDisplayInfoId" Label="Quiver" Variant="Variant.Outlined" HideSpinButtons="true" />
