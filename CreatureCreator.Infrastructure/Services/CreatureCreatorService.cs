@@ -11,6 +11,7 @@ using CreatureCreator.Infrastructure.DtoModels;
 using CreatureCreator.Core.Enums;
 using CreatureCreator.Infrastructure.Extensions;
 using CreatureCreator.Infrastructure.Helpers;
+using System.Diagnostics;
 
 namespace CreatureCreator.Infrastructure.Services
 {
@@ -89,28 +90,113 @@ namespace CreatureCreator.Infrastructure.Services
         public async Task<List<ValidationStatusDto>> ValidateDatabase()
         {
             var result = new List<ValidationStatusDto>();
-            var worldDbOk = await _mySql.WorldConnectionTestAsync();
-            var hotfixesDbOk = await _mySql.HotfixesConnectionTestAsync();
-            var charactersDbOk = await _mySql.CharactersConnectionTestAsync();
+
+            bool worldServerIsRunning = false;
+            bool bNetServerIsRunning = false;
+            bool mySqlIsRunning = false;
+
+            var processes = Process.GetProcesses();
+            foreach (var process in processes)
+            {
+                var processName = process.ProcessName.ToLower();
+                if (processName.Contains("bnetserver"))
+                {
+                    bNetServerIsRunning = true;
+                    Console.WriteLine($"{processName} is running.");
+                }
+                else if (processName.Contains("worldserver"))
+                {
+                    worldServerIsRunning = true;
+                    Console.WriteLine($"{processName} is running.");
+                }
+                else if (processName.Contains("mysql"))
+                {
+                    mySqlIsRunning = true;
+                    Console.WriteLine($"{processName} is running.");
+                }
+            }
+
+            var worldDbOk = mySqlIsRunning && await _mySql.WorldConnectionTestAsync();
+            var hotfixesDbOk = mySqlIsRunning && await _mySql.HotfixesConnectionTestAsync();
+            var charactersDbOk = mySqlIsRunning && await _mySql.CharactersConnectionTestAsync();
+
+            var tableNpcModelItemSlotDisplayInfoExists = hotfixesDbOk && await _mySql.TableExists<NpcModelItemSlotDisplayInfo>();
+            var tableCreatureDisplayInfoOptionExists = hotfixesDbOk && await _mySql.TableExists<CreatureDisplayInfoOption>();
 
             result.Add(new ValidationStatusDto()
             {
-                Name = ValidationHelper.ValidateWorldDb,
-                Status = worldDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
-                Description = worldDbOk ? "" : "Unable to connect to World DB. Make sure MySQL is running and that the Schema name is set correctly."
+                Name = ValidationHelper.ValidateBNetServerProcess,
+                Status = bNetServerIsRunning ? ValidationStatuses.OK : ValidationStatuses.WARNING,
+                Description = bNetServerIsRunning ? "" : "Process is not running."
             });
             result.Add(new ValidationStatusDto()
             {
-                Name = ValidationHelper.ValidateCharactersDb,
-                Status = charactersDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
-                Description = charactersDbOk ? "" : "Unable to connect to Characters DB. Make sure MySQL is running and that the Schema name is set correctly."
+                Name = ValidationHelper.ValidateWorldServerProcess,
+                Status = worldServerIsRunning ? ValidationStatuses.OK : ValidationStatuses.WARNING,
+                Description = worldServerIsRunning ? "" : "Process is not running."
             });
             result.Add(new ValidationStatusDto()
             {
-                Name = ValidationHelper.ValidateHotfixesDb,
-                Status = hotfixesDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
-                Description = hotfixesDbOk ? "" : "Unable to connect to Hotfixes DB. Make sure MySQL is running and that the Schema name is set correctly."
+                Name = ValidationHelper.ValidateMySqlProcess,
+                Status = mySqlIsRunning ? ValidationStatuses.OK : ValidationStatuses.ERROR,
+                Description = mySqlIsRunning ? "" : "Process is not running."
             });
+
+            if (mySqlIsRunning)
+            {
+                result.Add(new ValidationStatusDto()
+                {
+                    Name = ValidationHelper.ValidateWorldDb,
+                    Status = worldDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
+                    Description = worldDbOk ? "" : "Unable to connect to World DB."
+                });
+                result.Add(new ValidationStatusDto()
+                {
+                    Name = ValidationHelper.ValidateCharactersDb,
+                    Status = charactersDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
+                    Description = charactersDbOk ? "" : "Unable to connect to Characters DB."
+                });
+                result.Add(new ValidationStatusDto()
+                {
+                    Name = ValidationHelper.ValidateHotfixesDb,
+                    Status = hotfixesDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
+                    Description = hotfixesDbOk ? "" : "Unable to connect to Hotfixes DB."
+                });
+                result.Add(new ValidationStatusDto()
+                {
+                    Name = ValidationHelper.ValidateCreatureDisplayInfoOptionTable,
+                    Status = tableCreatureDisplayInfoOptionExists ? ValidationStatuses.OK : ValidationStatuses.ERROR,
+                    Description = tableCreatureDisplayInfoOptionExists ? "" : "Table missing."
+                });
+                result.Add(new ValidationStatusDto()
+                {
+                    Name = ValidationHelper.ValidateNpcModelItemSlotDisplayInfoTable,
+                    Status = tableNpcModelItemSlotDisplayInfoExists ? ValidationStatuses.OK : ValidationStatuses.ERROR,
+                    Description = tableNpcModelItemSlotDisplayInfoExists ? "" : "Table missing."
+                });
+            }
+            else
+            {
+                result.Add(new ValidationStatusDto()
+                {
+                    Name = ValidationHelper.ValidateWorldDb,
+                    Status = ValidationStatuses.UNKNOWN,
+                    Description = "MySQL is not running."
+                });
+                result.Add(new ValidationStatusDto()
+                {
+                    Name = ValidationHelper.ValidateCharactersDb,
+                    Status = ValidationStatuses.UNKNOWN,
+                    Description = "MySQL is not running."
+                });
+                result.Add(new ValidationStatusDto()
+                {
+                    Name = ValidationHelper.ValidateHotfixesDb,
+                    Status = ValidationStatuses.UNKNOWN,
+                    Description = "MySQL is not running."
+                });
+            }
+
 
             return result;
         }
@@ -272,15 +358,11 @@ namespace CreatureCreator.Infrastructure.Services
                 return null;
             }
 
-            var result = new CreatureDto()
+            var result = new CreatureDto(await GetNextCreatureIdAsync(), displayInfo.Gender, DisplayRaces.NONE)
             {
-                Id = await GetNextCreatureIdAsync(),
                 CreatureType = creatureTemplate != null ? creatureTemplate.Type : CreatureTypes.HUMANOID,
                 Faction = creatureTemplate != null ? creatureTemplate.Faction : 17,
                 CreatureUnitClass = creatureTemplate != null ? creatureTemplate.UnitClass : CreatureUnitClasses.WARRIOR,
-                Gender = displayInfo.Gender,
-                Race = DisplayRaces.NONE,
-                Customizations = new Dictionary<int, int>(),
                 Level = creatureTemplate != null && creatureTemplate.MaxLevel > 0 ? creatureTemplate.MaxLevel : 30,
                 Name = creatureTemplate?.Name,
                 SubName = creatureTemplate?.SubName,
@@ -446,26 +528,11 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 customizations.Add(customization.ChrCustomizationOptionId, customization.ChrCustomizationChoiceId);
             }
-            var result = new CreatureDto()
+            var result = new CreatureDto(await GetNextCreatureIdAsync(), character.Gender, character.Race)
             {
-                CreatureType = CreatureTypes.HUMANOID,
-                Id = await GetNextCreatureIdAsync(),
                 Customizations = customizations,
-                Gender = character.Gender,
                 Level = character.Level,
-                Scale = 1,
-                Rank = Ranks.NORMAL,
-                Name = character.Name,
-                CreatureUnitClass = CreatureUnitClasses.WARRIOR,
-                Race = character.Race,
-                UnitFlags = UnitFlags.NONE,
-                UnitFlags2 = UnitFlags2.NONE,
-                UnitFlags3 = UnitFlags3.NONE,
-                FlagsExtra = FlagsExtra.NONE,
-                HealthModifier = 1,
-                DamageModifier = 1,
-                IsCustomizable = true,
-                IsUpdate = false
+                Name = character.Name
             };
 
             progressCallback("Equipment", "Retrieving equipment", 50);
@@ -627,18 +694,7 @@ namespace CreatureCreator.Infrastructure.Services
             progressCallback("Creature", "Preparing creature", 50);
             var id = await GetNextCreatureIdAsync();
             progressCallback("Done", "Creature returned", 100);
-            return new CreatureDto()
-            {
-                Race = race,
-                Gender = gender,
-                Id = id,
-                Level = 30,
-                Rank = Ranks.NORMAL,
-                CreatureType = CreatureTypes.HUMANOID,
-                CreatureUnitClass = CreatureUnitClasses.WARRIOR,
-                Scale = 1,
-                Customizations = new Dictionary<int, int>()
-            };
+            return new CreatureDto(id, gender, race);
         }
 
         public async Task<Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>> GetAvailableCustomizations(DisplayRaces race, Genders gender, bool includeDruidForms = false)
@@ -671,9 +727,30 @@ namespace CreatureCreator.Infrastructure.Services
             return result;
         }
 
-        static void ConsoleProgressCallback(string stepTitle, string stepSubTitle, int progress)
+        public void LaunchWorldServer()
+        {
+            return;
+            string path = @"D:\TrinityCore\Fork\out\build\x64-Release\bin";
+            var process = new Process()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = @$"{path}/worldserver.exe",
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    WorkingDirectory = path,
+                    CreateNoWindow = false,
+
+                }
+            };
+
+            process.Start();
+        }
+
+        void ConsoleProgressCallback(string stepTitle, string stepSubTitle, int progress)
         {
             Console.WriteLine($"{progress} %: {stepTitle} => {stepSubTitle}");
         }
+
+
     }
 }

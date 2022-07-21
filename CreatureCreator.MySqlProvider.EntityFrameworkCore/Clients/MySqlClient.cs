@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace CreatureCreator.MySqlProvider.EntityFrameworkCore.Clients
 {
@@ -103,6 +104,26 @@ namespace CreatureCreator.MySqlProvider.EntityFrameworkCore.Clients
             else if (typeof(ICharactersSchema).IsAssignableFrom(typeof(T)))
                 return _charactersDbContext;
             throw new Exception($"Incorrect implementation of {nameof(T)}. Make sure {nameof(T)} derives from one of the Schema classes.");
+        }
+
+        public async Task<bool> TableExists<T>()
+            where T : class, ITrinityCore
+        {
+            var entityType = SetContext<T>().Model.FindEntityType(typeof(T));
+            var tableName = entityType.GetTableName();
+
+            using (var command = SetContext<T>().Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = $"SHOW TABLES LIKE '{tableName}';";
+                command.CommandType = CommandType.Text;
+
+                SetContext<T>().Database.OpenConnection();
+
+                using (var result = command.ExecuteReader())
+                {
+                    return result.HasRows;
+                }
+            }
         }
     }
 }

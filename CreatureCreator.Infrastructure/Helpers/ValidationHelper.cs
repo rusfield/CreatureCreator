@@ -14,5 +14,10 @@ namespace CreatureCreator.Infrastructure.Helpers
         public const string ValidateWorldDb = "World DB";
         public const string ValidateHotfixesDb = "Hotfixes DB";
         public const string ValidateCharactersDb = "Characters DB";
+        public const string ValidateMySqlProcess = "MySql Process";
+        public const string ValidateWorldServerProcess = "World Server";
+        public const string ValidateBNetServerProcess = "BattleNet Server";
+        public const string ValidateNpcModelItemSlotDisplayInfoTable = "NpcModelItemSlotDisplayInfo";
+        public const string ValidateCreatureDisplayInfoOptionTable = "CreatureDisplayInfoOption";
     }
 }

@@ -9,23 +9,30 @@ namespace CreatureCreator.Infrastructure.DtoModels
 {
     public class CreatureDto
     {
+        public CreatureDto(int id, Genders gender, DisplayRaces race)
+        {
+            Id = id;
+            Gender = gender;
+            Race = race;
+        }
+
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? SubName { get; set; }
-        public int Level { get; set; }
-        public int Faction { get; set; }
-        public double Scale { get; set; }
-        public Ranks Rank { get; set; }
         public Genders Gender { get; set; }
         public DisplayRaces Race { get; set; }
-        public CreatureTypes CreatureType { get; set; }
-        public CreatureUnitClasses CreatureUnitClass { get; set; }
-        public UnitFlags UnitFlags { get; set; }
-        public UnitFlags2 UnitFlags2 { get; set; }
-        public UnitFlags3 UnitFlags3 { get; set; }
-        public FlagsExtra FlagsExtra { get; set; }
-        public double HealthModifier { get; set; }
-        public double DamageModifier { get; set; }
+        public string? Name { get; set; } = "New Creature";
+        public string? SubName { get; set; } = null;
+        public int Level { get; set; } = 30;
+        public int Faction { get; set; } = 1;
+        public double Scale { get; set; } = 1;
+        public Ranks Rank { get; set; } = Ranks.NORMAL;
+        public CreatureTypes CreatureType { get; set; } = CreatureTypes.HUMANOID;
+        public CreatureUnitClasses CreatureUnitClass { get; set; } = CreatureUnitClasses.WARRIOR;
+        public UnitFlags UnitFlags { get; set; } = 0;
+        public UnitFlags2 UnitFlags2 { get; set; } = 0;
+        public UnitFlags3 UnitFlags3 { get; set; } = 0;
+        public FlagsExtra FlagsExtra { get; set; } = 0;
+        public double HealthModifier { get; set; } = 1;
+        public double DamageModifier { get; set; } = 1;
         // Armor
         public int? HeadItemDisplayInfoId { get; set; }
         public int? ShouldersItemDisplayInfoId { get; set; }
@@ -51,10 +58,10 @@ namespace CreatureCreator.Infrastructure.DtoModels
         public int? RangedItemVisual { get; set; }
         public int? RangedItemAppearanceModifierId { get; set; }
 
-        public Dictionary<int, int> Customizations { get; set; }
+        public Dictionary<int, int> Customizations { get; set; } = new Dictionary<int, int>();
 
-        public bool IsCustomizable { get; set; }
-        public bool IsUpdate { get; set; }
+        public bool IsCustomizable { get; set; } = true;
+        public bool IsUpdate { get; set; } = false;
 
     }
 }

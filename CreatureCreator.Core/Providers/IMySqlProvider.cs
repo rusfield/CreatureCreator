@@ -26,6 +26,8 @@ namespace CreatureCreator.Core.Providers
             where T : class, ITrinityCore;
         public Task DeleteManyAsync<T>(IEnumerable<T> entities)
             where T : class, ITrinityCore;
+        public Task<bool> TableExists<T>()
+            where T : class, ITrinityCore;
         public Task<bool> CharactersConnectionTestAsync();
         public Task<bool> HotfixesConnectionTestAsync();
         public Task<bool> WorldConnectionTestAsync();

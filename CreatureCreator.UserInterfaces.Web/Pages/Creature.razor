@@ -57,7 +57,7 @@
         {
             var parameters = new DialogParameters();
             parameters.Add("CreatureId", CreatureId);
-            var dialog = DialogService.Show<LoadCreature_Dialog>("", parameters, new DialogOptions() { DisableBackdropClick = true, CloseOnEscapeKey = false, NoHeader=true });
+            var dialog = DialogService.Show<LoadCreature_Dialog>("", parameters, new DialogOptions() { DisableBackdropClick = true, CloseOnEscapeKey = false, NoHeader = true });
             var result = await dialog.Result;
             creature = (CreatureDto)result.Data;
 
@@ -71,7 +71,7 @@
     {
         if (creature != null)
         {
-            var options = new DialogOptions { CloseOnEscapeKey = false, DisableBackdropClick=true, NoHeader=true };
+            var options = new DialogOptions { CloseOnEscapeKey = false, DisableBackdropClick = true, NoHeader = true };
             var parameters = new DialogParameters();
             parameters.Add("Creature", creature);
             var dialog = DialogService.Show<SaveCreature_Dialog>("", parameters, options);
@@ -88,3 +88,4 @@
             creatureLookup = (CreatureDto)result.Data;
     }
 }
+
