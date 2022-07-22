@@ -546,7 +546,7 @@ namespace CreatureCreator.Infrastructure.Services
             if (progressCallback == null)
                 progressCallback = ConsoleProgressCallback;
 
-            progressCallback("Character", $"Retrieving {characterName}", 15);
+            progressCallback("Character", $"Retrieving {characterName}", 5);
             var character = await _mySql.GetAsync<Characters>(c => c.Name == characterName);
             if (character == null)
             {
@@ -554,13 +554,25 @@ namespace CreatureCreator.Infrastructure.Services
                 return null;
             }
 
-            progressCallback("Character", $"Retrieving Sound", 20);
+            progressCallback("Character", $"Retrieving Sound", 10);
             var displayInfoId = new CreatureDisplayInfo().GetDisplayInfoIdByRaceAndGenders(character.Race, character.Gender);
             int soundId = 0;
             if (displayInfoId != null)
             {
                 var displayInfo = await _mySql.GetAsync<CreatureDisplayInfo>(c => c.Id == displayInfoId) ?? await _db2.GetAsync<CreatureDisplayInfo>(c => c.Id == displayInfoId);
-                soundId = displayInfo?.SoundId ?? 0;
+                if (displayInfo != null)
+                {
+                    if (displayInfo.SoundId != 0)
+                    {
+                        soundId = displayInfo.SoundId;
+                    }
+                    else
+                    {
+                        var modelData = await _db2.GetAsync<CreatureModelData>(c => c.Id == displayInfo.ModelId);
+                        if (modelData != null)
+                            soundId = modelData.SoundId;
+                    }
+                }
             }
 
             progressCallback("Customizations", "Retrieving customizations", 30);
@@ -739,12 +751,24 @@ namespace CreatureCreator.Infrastructure.Services
 
             var displayInfoId = new CreatureDisplayInfo().GetDisplayInfoIdByRaceAndGenders(race, gender);
             int soundId = 0;
-            if(displayInfoId != null)
+            if (displayInfoId != null)
             {
                 var displayInfo = await _mySql.GetAsync<CreatureDisplayInfo>(c => c.Id == displayInfoId) ?? await _db2.GetAsync<CreatureDisplayInfo>(c => c.Id == displayInfoId);
-                soundId = displayInfo?.SoundId ?? 0;
+                if (displayInfo != null)
+                {
+                    if (displayInfo.SoundId != 0)
+                    {
+                        soundId = displayInfo.SoundId;
+                    }
+                    else
+                    {
+                        var modelData = await _db2.GetAsync<CreatureModelData>(c => c.Id == displayInfo.ModelId);
+                        if (modelData != null)
+                            soundId = modelData.SoundId;
+                    }
+                }
             }
-            
+
 
             progressCallback("Creature", "Preparing creature", 66);
             var id = await GetNextCreatureIdAsync();

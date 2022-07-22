@@ -178,7 +178,7 @@ namespace CreatureCreator.Infrastructure.Helpers
                 Id = creature.Id,
                 ExtendedDisplayInfoId = creature.Id,
                 Gender = creature.Gender,
-                ModelId = new CreatureDisplayInfoExtra().GetModelIdByRaceAndGenders(creature.Race, creature.Gender),
+                ModelId = new CreatureDisplayInfoExtra().GetModelIdByRaceAndGenders(creature.Race, creature.Gender) ?? throw new NotImplementedException(),
                 UnarmedWeaponType = -1,
                 CreatureModelAlpha = 255,
                 CreatureModelScale = 1,

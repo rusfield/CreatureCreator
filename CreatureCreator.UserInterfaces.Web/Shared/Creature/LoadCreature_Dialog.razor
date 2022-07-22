@@ -82,7 +82,7 @@
 
     private async Task SelectionNew(DisplayRaces race, Genders gender)
     {
-        var creature = await Service.GetCreatureByRaceAndGender(race, gender);
+        var creature = await Service.GetCreatureByRaceAndGender(race, gender, loaderProgressRef.SetLoading);
         Close(creature);
     }
 
