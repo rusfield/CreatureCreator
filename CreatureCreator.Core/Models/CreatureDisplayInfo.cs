@@ -12,6 +12,7 @@ namespace CreatureCreator.Core.Models
     {
         public int Id { get; set; }
         public int ModelId { get; set; }
+        public int SoundId { get; set; }
         public int ExtendedDisplayInfoId { get; set; }
         public Genders Gender { get; set; }
         public int SizeClass { get; set; }

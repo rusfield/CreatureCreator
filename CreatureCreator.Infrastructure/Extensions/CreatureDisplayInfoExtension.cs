@@ -11,7 +11,7 @@ namespace CreatureCreator.Infrastructure.Extensions
     public static class CreatureDisplayInfoExtension
     {
 
-        public static int GetDisplayInfoExtraIdByRaceAndGenders(this CreatureDisplayInfoExtra creatureDisplayInfoExtra, DisplayRaces displayRace, Genders Genders)
+        public static int? GetDisplayInfoExtraIdByRaceAndGenders(this CreatureDisplayInfoExtra creatureDisplayInfoExtra, DisplayRaces displayRace, Genders Genders)
         {
             return (displayRace, Genders) switch
             {
@@ -62,11 +62,11 @@ namespace CreatureCreator.Infrastructure.Extensions
                 (DisplayRaces.HIGHMOUNTAIN_TAUREN, Genders.Male) => 143287,  
                 (DisplayRaces.HIGHMOUNTAIN_TAUREN, Genders.Female) => 143288, 
 
-                //_ => null
+                _ => null
             };
         }
 
-        public static int GetDisplayInfoIdByRaceAndGenders(this CreatureDisplayInfoExtra creatureDisplayInfoExtra, DisplayRaces displayRace, Genders Genders)
+        public static int? GetDisplayInfoIdByRaceAndGenders(this CreatureDisplayInfo creatureDisplayInfo, DisplayRaces displayRace, Genders Genders)
         {
             return (displayRace, Genders) switch
             {
@@ -117,11 +117,11 @@ namespace CreatureCreator.Infrastructure.Extensions
                 (DisplayRaces.HIGHMOUNTAIN_TAUREN, Genders.Male) => 82377, 
                 (DisplayRaces.HIGHMOUNTAIN_TAUREN, Genders.Female) => 82378, 
 
-                //_ => null
+                _ => null
             };
         }
 
-        public static int GetModelIdByRaceAndGenders(this CreatureDisplayInfoExtra creatureDisplayInfoExtra, DisplayRaces displayRace, Genders Genders)
+        public static int? GetModelIdByRaceAndGenders(this CreatureDisplayInfoExtra creatureDisplayInfoExtra, DisplayRaces displayRace, Genders Genders)
         {
             return (displayRace, Genders) switch
             {
@@ -172,7 +172,7 @@ namespace CreatureCreator.Infrastructure.Extensions
                 (DisplayRaces.HIGHMOUNTAIN_TAUREN, Genders.Male) => 9932,
                 (DisplayRaces.HIGHMOUNTAIN_TAUREN, Genders.Female) => 9933,
 
-                //_ => null
+                _ => null
             };
         }
     }

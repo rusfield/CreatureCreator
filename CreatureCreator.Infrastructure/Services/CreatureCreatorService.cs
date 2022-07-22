@@ -373,6 +373,22 @@ namespace CreatureCreator.Infrastructure.Services
                 return null;
             }
 
+            var auras = new List<int>();
+            if(creatureTemplate != null)
+            {
+                progressCallback("Creature", $"Retrieving Auras", 25);
+                var creatureTemplateAddon = await _mySql.GetAsync<CreatureTemplateAddon>(c => c.Entry == creatureTemplate.Entry);
+                if(creatureTemplateAddon != null && !string.IsNullOrWhiteSpace(creatureTemplateAddon.Auras))
+                {
+                    var auraStrings = creatureTemplateAddon.Auras.Split(' ');
+                    foreach(var auraString in auraStrings)
+                    {
+                        if (int.TryParse(auraString.Trim(), out var aura) && aura != 0)
+                            auras.Add(aura);
+                    }
+                }
+
+            }
             var result = new CreatureDto(await GetNextCreatureIdAsync(), displayInfo.Gender, DisplayRaces.NONE)
             {
                 CreatureType = creatureTemplate != null ? creatureTemplate.Type : CreatureTypes.HUMANOID,
@@ -389,6 +405,10 @@ namespace CreatureCreator.Infrastructure.Services
                 UnitFlags = (UnitFlags)(creatureTemplate?.UnitFlags ?? 0),
                 UnitFlags2 = (UnitFlags2)(creatureTemplate?.UnitFlags2 ?? 0),
                 UnitFlags3 = (UnitFlags3)(creatureTemplate?.UnitFlags3 ?? 0),
+                ArmorModifier = creatureTemplate?.ArmorModifier ?? 1,
+                SoundId = displayInfo.SoundId,
+                RegenHealth = creatureTemplate?.RegenHealth ?? true,
+                Auras = auras,
                 IsCustomizable = false,
                 IsUpdate = false
             };
@@ -534,6 +554,15 @@ namespace CreatureCreator.Infrastructure.Services
                 return null;
             }
 
+            progressCallback("Character", $"Retrieving Sound", 20);
+            var displayInfoId = new CreatureDisplayInfo().GetDisplayInfoIdByRaceAndGenders(character.Race, character.Gender);
+            int soundId = 0;
+            if (displayInfoId != null)
+            {
+                var displayInfo = await _mySql.GetAsync<CreatureDisplayInfo>(c => c.Id == displayInfoId) ?? await _db2.GetAsync<CreatureDisplayInfo>(c => c.Id == displayInfoId);
+                soundId = displayInfo?.SoundId ?? 0;
+            }
+
             progressCallback("Customizations", "Retrieving customizations", 30);
             var characterCustomization = await _mySql.GetManyAsync<CharacterCustomizations>(c => c.Guid == character.Guid);
             progressCallback("Customizations", $"Found {characterCustomization.Count()} customizations", 40);
@@ -547,7 +576,8 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 Customizations = customizations,
                 Level = character.Level,
-                Name = character.Name
+                Name = character.Name,
+                SoundId = soundId
             };
 
             progressCallback("Equipment", "Retrieving equipment", 50);
@@ -705,11 +735,24 @@ namespace CreatureCreator.Infrastructure.Services
         {
             if (progressCallback == null)
                 progressCallback = ConsoleProgressCallback;
+            progressCallback("Creature", "Retrieving Sound", 33);
 
-            progressCallback("Creature", "Preparing creature", 50);
+            var displayInfoId = new CreatureDisplayInfo().GetDisplayInfoIdByRaceAndGenders(race, gender);
+            int soundId = 0;
+            if(displayInfoId != null)
+            {
+                var displayInfo = await _mySql.GetAsync<CreatureDisplayInfo>(c => c.Id == displayInfoId) ?? await _db2.GetAsync<CreatureDisplayInfo>(c => c.Id == displayInfoId);
+                soundId = displayInfo?.SoundId ?? 0;
+            }
+            
+
+            progressCallback("Creature", "Preparing creature", 66);
             var id = await GetNextCreatureIdAsync();
             progressCallback("Done", "Creature returned", 100);
-            return new CreatureDto(id, gender, race);
+            return new CreatureDto(id, gender, race)
+            {
+                SoundId = soundId
+            };
         }
 
         public async Task<Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>> GetAvailableCustomizations(DisplayRaces race, Genders gender, bool includeDruidForms = false, Action<string, string, int>? progressCallback = null)
