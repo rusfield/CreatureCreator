@@ -12,7 +12,7 @@
 
     <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-2">
         <MudStack Row="true">
-            <MudButton Variant="@(itemLookup == null? Variant.Outlined : Variant.Filled)" Color="Color.Info">Item Lookup</MudButton>
+            <MudButton Variant="@(itemLookup == null? Variant.Outlined : Variant.Filled)" Color="Color.Info" OnClick="@ItemLookup">Item Lookup</MudButton>
             <MudButton Variant="@(creatureLookup == null? Variant.Outlined : Variant.Filled)" Color="Color.Info" OnClick="@CreatureLookup">Creature Lookup</MudButton>
         </MudStack>
         <MudStack Row="true">
@@ -83,6 +83,14 @@
     async Task CreatureLookup()
     {
         var dialog = DialogService.Show<LoadCreature_Dialog>("", new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true });
+        var result = await dialog.Result;
+        if (result.Data != null)
+            creatureLookup = (CreatureDto)result.Data;
+    }
+
+    async Task ItemLookup()
+    {
+        var dialog = DialogService.Show<LoadItem_Dialog>("", new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true });
         var result = await dialog.Result;
         if (result.Data != null)
             creatureLookup = (CreatureDto)result.Data;

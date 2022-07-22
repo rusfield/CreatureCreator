@@ -23,7 +23,7 @@
         </MudTable>
     </MudItem>
     <MudItem xs="6">
-        <MudTable Items="@creatures" Hover="true">
+        <MudTable Items="@creatures" Hover="true" @ref="@_table">
             <HeaderContent>
                 <MudTh>@*Avatars*@</MudTh>
                 <MudTh>NAME</MudTh>
@@ -31,7 +31,7 @@
                 <MudTh Style="text-align:right">ACTION</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Avatar">#</MudTd>
+                <MudTd DataLabel="Avatar"><MudAvatar Elevation="6" Image="@($"/images/races/{context.Gender.ToString().ToLower()}/{context.Race.ToString().ToLower().Replace("_","")}.jpg")"/></MudTd>
                 <MudTd DataLabel="Name">@context.Name</MudTd>
                 <MudTd DataLabel="Id">@context.Id</MudTd>
                 <MudTd DataLabel="Action">
@@ -43,7 +43,7 @@
             </RowTemplate>
             <PagerContent>
                 <MudPaper Class="d-flex flex-column align-center">
-                    <MudPagination Rectangular="true" Variant="Variant.Text" Class="ma-2" />
+                    <MudPagination Rectangular="true" Variant="Variant.Text" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="ma-2" SelectedChanged="PageChanged" />
                 </MudPaper>
             </PagerContent>
         </MudTable>
@@ -53,6 +53,8 @@
 
 
 @code {
+    MudTable<DashboardCreatureDto> _table;
+
     List<DashboardCreatureDto> creatures;
     List<ValidationStatusDto> systemStatus;
 
@@ -89,10 +91,15 @@
         };
     }
 
-    private async void DeleteCreature(int creatureId)
+    async void DeleteCreature(int creatureId)
     {
         await Service.DeleteCreatureAsync(creatureId);
         creatures.RemoveAll(c => c.Id == creatureId);
         this.StateHasChanged();
+    }
+
+    void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
     }
 }

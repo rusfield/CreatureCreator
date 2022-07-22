@@ -158,7 +158,7 @@ namespace CreatureCreator.Infrastructure.Helpers
             {
                 Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
                 RecordId = creature.Id,
-                Status = HotfixStatus.VALID,
+                Status = HotfixStatuses.VALID,
                 TableHash = TableHashCreatureDisplayInfo,
                 UniqueId = creature.Id,
                 VerifiedBuild = _verifiedBuild
@@ -274,7 +274,7 @@ namespace CreatureCreator.Infrastructure.Helpers
                 {
                     Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
                     RecordId = item.Id,
-                    Status = HotfixStatus.VALID,
+                    Status = HotfixStatuses.VALID,
                     TableHash = TableHashNpcModelItemSlotDisplayInfo,
                     UniqueId = creature.Id,
                     VerifiedBuild = _verifiedBuild
@@ -301,7 +301,7 @@ namespace CreatureCreator.Infrastructure.Helpers
                 {
                     Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
                     RecordId = creature.Id + customization.Key,
-                    Status = HotfixStatus.VALID,
+                    Status = HotfixStatuses.VALID,
                     UniqueId = creature.Id,
                     TableHash = TableHashCreatureDisplayInfoOption,
                     VerifiedBuild = _verifiedBuild
@@ -316,7 +316,7 @@ namespace CreatureCreator.Infrastructure.Helpers
             {
                 Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
                 RecordId = creature.Id,
-                Status = HotfixStatus.VALID,
+                Status = HotfixStatuses.VALID,
                 UniqueId = creature.Id,
                 TableHash = TableHashCreatureDisplayInfoExtra,
                 VerifiedBuild = _verifiedBuild

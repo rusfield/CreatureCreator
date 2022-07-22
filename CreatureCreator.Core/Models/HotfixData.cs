@@ -16,7 +16,7 @@ namespace CreatureCreator.Core.Models
         public int UniqueId { get; set; }
         public long TableHash { get; set; }
         public int RecordId { get; set; }
-        public HotfixStatus Status { get; set; }
+        public HotfixStatuses Status { get; set; }
         public int VerifiedBuild { get; set; }
 
     }

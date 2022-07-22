@@ -251,7 +251,7 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 foreach (var hotfix in hotfixData)
                 {
-                    hotfix.Status = HotfixStatus.INVALID;
+                    hotfix.Status = HotfixStatuses.INVALID;
                 }
                 await _mySql.UpdateManyAsync(hotfixData);
             }
@@ -697,8 +697,11 @@ namespace CreatureCreator.Infrastructure.Services
             return new CreatureDto(id, gender, race);
         }
 
-        public async Task<Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>> GetAvailableCustomizations(DisplayRaces race, Genders gender, bool includeDruidForms = false)
+        public async Task<Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>> GetAvailableCustomizations(DisplayRaces race, Genders gender, bool includeDruidForms = false, Action<string, string, int>? progressCallback = null)
         {
+            if (progressCallback == null)
+                progressCallback = ConsoleProgressCallback;
+
             var result = new Dictionary<CustomizationOptionDto, List<CustomizationChoiceDto>>();
             var chrModel = new ChrModels().ConvertFromRaceAndGender(race, gender);
             if (chrModel == null)
@@ -724,6 +727,59 @@ namespace CreatureCreator.Infrastructure.Services
                  }).ToList()
                 );
             }
+            return result;
+        }
+
+        public async Task<List<ItemDto>> GetItemsByItemId(int itemId, Action<string, string, int>? progressCallback = null)
+        {
+            var result = new List<ItemDto>();
+
+            if (progressCallback == null)
+                progressCallback = ConsoleProgressCallback;
+
+            progressCallback("Item", $"Retrieving item", 20);
+            var item = await _db2.GetAsync<Item>(c => c.Id == itemId);
+            if(item == null)
+            {
+                progressCallback("Item", $"Item not found", 100);
+                return result;
+            }
+            progressCallback("Item", $"Retrieving item", 40);
+            var modifiedAppearances = (await _db2.GetManyAsync<ItemModifiedAppearance>(c => c.ItemId == itemId)).OrderBy(c => c.OrderIndex).ToList();
+            if (modifiedAppearances == null || modifiedAppearances.Count == 0)
+            {
+                progressCallback("Item", $"Modified Appearance not found", 100);
+                return result;
+            }
+
+            bool isRaidDrop = modifiedAppearances.Count == 4;
+            bool isArtifact = modifiedAppearances.Count == 24;
+
+            
+
+            foreach (var (modifiedAppearance, index) in modifiedAppearances.Select((value, idx) => (value, idx)))
+            {
+                progressCallback("Item", $"Retrieving Item Appearance {index + 1} of {modifiedAppearances.Count}", Math.Min(50 + (50 / modifiedAppearances.Count * index), 99));
+
+                var itemAppearance = await _db2.GetAsync<ItemAppearance>(c => c.Id == modifiedAppearance.ItemAppearanceId);
+                if (itemAppearance == null)
+                {
+                    progressCallback("Item", $"Item Appearance not found", Math.Min(50 + (50 / modifiedAppearances.Count * index), 99));
+                    continue;
+                }
+                   
+                result.Add(new ItemDto()
+                {
+                    ItemId = itemId,
+                    ItemDisplayInfoId = itemAppearance.ItemDisplayInfoId,
+                    ArmorSlot = item.InventoryType.ToArmorSlot(),
+                    WeaponSlot = item.InventoryType.ToWeaponSlot(),
+                    ItemModifiedAppearanceId = modifiedAppearance.ItemAppearanceModifierId,
+                    ItemSourceType = (ItemSourceTypes)(isRaidDrop ? 1 + index : (isArtifact ? 5 + index : 0))
+                });
+            }
+
+            progressCallback("Item", $"Items returned", 100);
             return result;
         }
 

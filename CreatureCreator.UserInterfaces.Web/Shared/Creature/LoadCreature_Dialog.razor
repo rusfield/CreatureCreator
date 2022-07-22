@@ -5,42 +5,31 @@
 @inject CreatureCreatorService Service
 @inject ISnackbar Snackbar
 
-<MudOverlay Visible="isLoading" DarkBackground="false" Absolute="true" Class="Z-80">
-    <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 400px;">
-        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
-        <MudText Typo="Typo.h5" Color="Color.Primary">@loadingTitle</MudText>
-        <MudText Typo="Typo.h6" Color="Color.Primary">@loadingSubTitle</MudText>
-        <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="loadingProgress" Class="my-7">
-            <MudText Typo="Typo.subtitle1" Color="Color.Dark">
-                <b>@($"{loadingProgress}%")</b>
-            </MudText>
-        </MudProgressLinear>
-    </MudStack>
-</MudOverlay>
-
 <MudDialog>
     <DialogContent>
-        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 400px;" Class="@(isLoading ? "invisible" : "visible")">
-            <MudTextField DebounceInterval="1000" OnDebounceIntervalElapsed="CharacterNameDebounce" @bind-Value="CharacterName" @ref="characterNameRef" Label="Character Name" Variant="Variant.Outlined" FullWidth="true" Disabled="isLoading" />
-            <MudText Typo="Typo.h4">
-                - or -
-            </MudText>
-            <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureIdDebounce" @bind-Value="CreatureId" @ref="creatureIdRef" Label="Creature ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" Disabled="isLoading" />
-            <MudText Typo="Typo.h4">
-                - or -
-            </MudText>
-            <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureDisplayIdDebounce" @bind-Value="CreatureDisplayId" @ref="creatureDisplayIdRef" Label="Creature Display ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" Disabled="isLoading" />
-            <MudText Typo="Typo.h4">
-                - or -
-            </MudText>
-            <MudText Typo="Typo.h6">
-                Start from scratch
-            </MudText>
-            <MudStack Row="true" Style="height:200">
-                <RaceSelector Gender="Genders.Male" RaceSelectedCallback="SelectNewMale" />
-                <RaceSelector Gender="Genders.Female" RaceSelectedCallback="SelectNewFemale" />
-            </MudStack>
-            <MudSpacer />
+        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 400px;">
+            <LoaderProgress @ref="loaderProgressRef">
+                <MudTextField DebounceInterval="1000" OnDebounceIntervalElapsed="CharacterNameDebounce" @bind-Value="CharacterName" @ref="characterNameRef" Label="Character Name" Variant="Variant.Outlined" FullWidth="true" />
+                <MudText Typo="Typo.h4">
+                    - or -
+                </MudText>
+                <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureIdDebounce" @bind-Value="CreatureId" @ref="creatureIdRef" Label="Creature ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" />
+                <MudText Typo="Typo.h4">
+                    - or -
+                </MudText>
+                <MudNumericField DebounceInterval="1000" OnDebounceIntervalElapsed="CreatureDisplayIdDebounce" @bind-Value="CreatureDisplayId" @ref="creatureDisplayIdRef" Label="Creature Display ID" Variant="Variant.Outlined" FullWidth="true" HideSpinButtons="true" />
+                <MudText Typo="Typo.h4">
+                    - or -
+                </MudText>
+                <MudText Typo="Typo.h6">
+                    Start from scratch
+                </MudText>
+                <MudStack Row="true" Style="height:200">
+                    <RaceSelector Gender="Genders.Male" RaceSelectedCallback="SelectNewMale" />
+                    <RaceSelector Gender="Genders.Female" RaceSelectedCallback="SelectNewFemale" />
+                </MudStack>
+                <MudSpacer />
+            </LoaderProgress>
         </MudStack>
     </DialogContent>
 </MudDialog>
@@ -62,6 +51,7 @@
     MudTextField<string> characterNameRef;
     MudNumericField<int?> creatureIdRef;
     MudNumericField<int?> creatureDisplayIdRef;
+    LoaderProgress loaderProgressRef;
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,7 +100,7 @@
     {
         if (int.TryParse(search, out int id))
         {
-            var creature = await Service.GetCreatureByIdAsync(id, SetLoading);
+            var creature = await Service.GetCreatureByIdAsync(id, loaderProgressRef.SetLoading);
             if (creature == null)
             {
                 Snackbar.Add($"Creature ID {search} not found.", Severity.Info);
@@ -132,7 +122,7 @@
     {
         if (int.TryParse(search, out int id))
         {
-            var creature = await Service.GetCreatureByDisplayIdAsync(id, SetLoading);
+            var creature = await Service.GetCreatureByDisplayIdAsync(id, loaderProgressRef.SetLoading);
             if (creature == null)
             {
                 Snackbar.Add($"Creature Display ID {search} not found.", Severity.Info);
@@ -151,7 +141,10 @@
     }
     async Task CharacterNameDebounce(string search)
     {
-        var creature = await Service.GetCreatureByCharacterNameAsync(search, SetLoading);
+        if (string.IsNullOrWhiteSpace(search))
+            return;
+
+        var creature = await Service.GetCreatureByCharacterNameAsync(search, loaderProgressRef.SetLoading);
         if (creature == null)
         {
             Snackbar.Add($"Character {search} not found.", Severity.Info);
@@ -164,20 +157,4 @@
         await characterNameRef.FocusAsync();
     }
 
-
-    #region Loading
-    bool isLoading = false;
-    string loadingTitle = "";
-    string loadingSubTitle = "";
-    int loadingProgress = 0;
-    private void SetLoading(string progressTitle, string progressSubTitle, int progress)
-    {
-        isLoading = progress < 100;
-
-        loadingProgress = progress;
-        loadingTitle = progressTitle;
-        loadingSubTitle = progressSubTitle;
-        this.StateHasChanged();
-    }
-    #endregion
 }

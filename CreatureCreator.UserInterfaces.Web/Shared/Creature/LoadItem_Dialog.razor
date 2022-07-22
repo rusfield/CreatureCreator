@@ -1,0 +1,162 @@
+﻿@using CreatureCreator.Core.Enums;
+@using CreatureCreator.Infrastructure.DtoModels
+@using CreatureCreator.Infrastructure.Services
+@using CreatureCreator.Infrastructure.Extensions
+
+@inject CreatureCreatorService Service
+@inject ISnackbar Snackbar
+
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="width: 400px;">
+
+            <LoaderProgress @ref="loaderProgressRef">
+                @if (!searchOk)
+                {
+                    <MudNumericField Class="mb-5" DebounceInterval="1000" OnDebounceIntervalElapsed="ItemIdDebounce" @bind-Value="_itemId" @ref="itemIdRef" Label="Item ID" HideSpinButtons="true" Variant="Variant.Outlined" FullWidth="true" />
+                }
+                else
+                {
+                    int column = 0;
+                    while (column < items.Count())
+                    {
+                        int innerColumn = column;
+                        <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center">
+                            @for (int i = 0; i < Math.Min(items.Count(), 4); i++)
+                            {
+                                int index = innerColumn + i;
+                                <MudStack Class="mb-5">
+                                    <MudText Style="font-size:xx-small" Color="Color.Secondary">@items[index].ItemSourceType.ToDisplayName()</MudText>
+                                    <MudButton Style="width:25%" Color="Color.Primary" Variant="Variant.Outlined" OnClick="@(() => LoadItem(index))">@items[index].ItemDisplayInfoId</MudButton>
+                                </MudStack>
+                            }
+                        </MudStack>
+                        column += 4;
+                    }
+                }
+            </LoaderProgress>
+        </MudStack>
+    </DialogContent>
+</MudDialog>
+
+
+@code
+{
+    [CascadingParameter]
+    MudDialogInstance Dialog { get; set; }
+
+
+    int? _itemId;
+    bool searchOk = false;
+
+    List<ItemDto> items = new List<ItemDto>();
+    MudNumericField<int?> itemIdRef;
+    LoaderProgress loaderProgressRef;
+
+    async Task ItemIdDebounce(string search)
+    {
+        items = new List<ItemDto>();
+        if (int.TryParse(search, out int id))
+        {
+            searchOk = true;
+            items = await Service.GetItemsByItemId(id, loaderProgressRef.SetLoading) ?? new List<ItemDto>();
+            if (items.Count == 0)
+            {
+                searchOk = false;
+                Snackbar.Add($"No items with ID {id} found.", Severity.Info);
+                this.StateHasChanged();
+            }
+            else
+            {
+                return;
+            }
+        }
+        else
+        {
+            Snackbar.Add($"Invalid input.", Severity.Info);
+        }
+        await itemIdRef.FocusAsync();
+    }
+
+    void LoadItem(int index)
+    {
+        var creature = new CreatureDto(0, Genders.Other, DisplayRaces.NONE);
+        var item = items[index];
+        if (item.ArmorSlot != null)
+        {
+            switch (item.ArmorSlot)
+            {
+                case ArmorSlots.HEAD:
+                    creature.HeadItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.SHOULDERS:
+                    creature.ShouldersItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.BACK:
+                    creature.BackItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.TABARD:
+                    creature.TabardItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.SHIRT:
+                    creature.ShirtItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.CHEST:
+                    creature.ChestItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.WAIST:
+                    creature.WaistItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.WRISTS:
+                    creature.WristsItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.HANDS:
+                    creature.HandsItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.QUIVER:
+                    creature.QuiverItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.LEGS:
+                    creature.LegsItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+
+                case ArmorSlots.FEET:
+                    creature.FeetItemDisplayInfoId = item.ItemDisplayInfoId;
+                    break;
+            }
+        }
+        else if (item.WeaponSlot != null)
+        {
+            switch (item.WeaponSlot)
+            {
+                case WeaponSlots.MAIN_HAND:
+                    creature.MainHandItemId = item.ItemId;
+                    creature.MainHandItemAppearanceModifierId = item.ItemModifiedAppearanceId;
+                    break;
+
+                case WeaponSlots.OFF_HAND:
+                    creature.OffHandItemId = item.ItemId;
+                    creature.OffHandItemAppearanceModifierId = item.ItemModifiedAppearanceId;
+                    break;
+
+                case WeaponSlots.RANGED:
+                    creature.RangedItemId = item.ItemId;
+                    creature.RangedItemAppearanceModifierId = item.ItemModifiedAppearanceId;
+                    break;
+            }
+        }
+
+        Dialog.Close(creature);
+    }
+}
