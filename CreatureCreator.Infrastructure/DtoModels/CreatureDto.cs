@@ -33,6 +33,11 @@ namespace CreatureCreator.Infrastructure.DtoModels
         public FlagsExtra FlagsExtra { get; set; } = 0;
         public double HealthModifier { get; set; } = 1;
         public double DamageModifier { get; set; } = 1;
+        public double ArmorModifier { get; set; } = 1;
+        public int SoundId { get; set; } = 0;
+        public bool RegenHealth { get; set; } = true;
+        public List<int> Auras { get; set; } = new List<int>();
+
         // Armor
         public int? HeadItemDisplayInfoId { get; set; }
         public int? ShouldersItemDisplayInfoId { get; set; }

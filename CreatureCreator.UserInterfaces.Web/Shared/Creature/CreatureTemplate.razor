@@ -4,10 +4,10 @@
 @inherits MudComponentBase
 
 <MudGrid>
-    <MudItem xs="3">
-        <MudNumericField @bind-Value="Creature.Faction" Label="Faction" Variant="Variant.Outlined" HideSpinButtons="true" Class="@cssClass" />
-        <MudNumericField @bind-Value="Creature.Level" Label="Level" HideSpinButtons="true" Variant="Variant.Outlined" Class="@cssClass" />
-        <MudSelect T="Ranks" @bind-Value="Creature.Rank" Label="Rank" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+    <MudItem xs="3" Class="@mudItemClass">
+        <MudNumericField @bind-Value="Creature.Faction" Label="Faction" Variant="Variant.Outlined" HideSpinButtons="true" Class="@mudElementClass" />
+        <MudNumericField @bind-Value="Creature.Level" Label="Level" HideSpinButtons="true" Variant="Variant.Outlined" Class="@mudElementClass" />
+        <MudSelect T="Ranks" @bind-Value="Creature.Rank" Label="Rank" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@mudElementClass">
             <MudSelectItem Value="@(Ranks.LESSER)">Lesser</MudSelectItem>
             <MudSelectItem Value="@(Ranks.NORMAL)">Normal</MudSelectItem>
             <MudSelectItem Value="@(Ranks.RARE)">Rare</MudSelectItem>
@@ -15,7 +15,7 @@
             <MudSelectItem Value="@(Ranks.RARE_ELITE)">Rare Elite</MudSelectItem>
             <MudSelectItem Value="@(Ranks.BOSS)">Boss</MudSelectItem>
         </MudSelect>
-        <MudSelect T="CreatureTypes" @bind-Value="Creature.CreatureType" Label="Type" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+        <MudSelect T="CreatureTypes" @bind-Value="Creature.CreatureType" Label="Type" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@mudElementClass">
             <MudSelectItem Value="@(CreatureTypes.NONE)">None</MudSelectItem>
             <MudSelectItem Value="@(CreatureTypes.HUMANOID)">Humanoid</MudSelectItem>
             <MudSelectItem Value="@(CreatureTypes.DEMON)">Demon</MudSelectItem>
@@ -25,62 +25,76 @@
             <MudSelectItem Value="@(CreatureTypes.BEAST)">Beast</MudSelectItem>
             <MudSelectItem Value="@(CreatureTypes.ELEMENTAL)">Elemental</MudSelectItem>
         </MudSelect>
-        <MudSelect T="CreatureUnitClasses" @bind-Value="Creature.CreatureUnitClass" Label="Power Resource" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@cssClass">
+        <MudSelect T="CreatureUnitClasses" @bind-Value="Creature.CreatureUnitClass" Label="Power Resource" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Class="@mudElementClass">
             <MudSelectItem Value="@(CreatureUnitClasses.WARRIOR)">Rage</MudSelectItem>
             <MudSelectItem Value="@(CreatureUnitClasses.ROGUE)">Energy</MudSelectItem>
             <MudSelectItem Value="@(CreatureUnitClasses.PALADIN)">Mana Melee</MudSelectItem>
             <MudSelectItem Value="@(CreatureUnitClasses.MAGE)">Mana Caster</MudSelectItem>
         </MudSelect>
-        <MudNumericField @bind-Value="Creature.Scale" Label="Scale" HideSpinButtons="true" Class="@cssClass" Variant="Variant.Outlined" />
+        <MudNumericField @bind-Value="Creature.Scale" Label="Scale" HideSpinButtons="true" Class="@mudElementClass" Variant="Variant.Outlined" />
 
     </MudItem>
 
-    <MudItem xs="6" Style="@($"background-image:url('images/models/{Creature.Gender.ToString().ToLower()}/{Creature.Race.ToString().Replace("_", "").ToLower()}.png'); background-repeat:no-repeat; background-position: center; background-size:contain;")">
+    <MudItem xs="6" Style="@($"background-image:url('images/models/{Creature.Gender.ToString().ToLower()}/{Creature.Race.ToString().Replace("_", "").ToLower()}.png'); background-repeat:no-repeat; background-position: center; background-size:contain;")" Class="@mudItemClass">
     </MudItem>
 
-    <MudItem xs="3">
-        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags))" @bind-Value="_unitFlags" @bind-SelectedValues="_unitFlagsSelection" Label="Unit Flags" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@cssClass">
+    <MudItem xs="3" Class="@mudItemClass">
+        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags))" @bind-Value="_unitFlags" @bind-SelectedValues="_unitFlagsSelection" Label="Unit Flags" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@mudElementClass">
             @foreach (UnitFlags flag in Enum.GetValues<UnitFlags>())
             {
                 <MudSelectItem Value="@(flag.ToString())">@flag</MudSelectItem>
             }
         </MudSelect>
-        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags2))" @bind-Value="_unitFlags2" @bind-SelectedValues="_unitFlags2Selection" Label="Unit Flags 2" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@cssClass">
+        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags2))" @bind-Value="_unitFlags2" @bind-SelectedValues="_unitFlags2Selection" Label="Unit Flags 2" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@mudElementClass">
             @foreach (UnitFlags2 flag in Enum.GetValues<UnitFlags2>())
             {
                 <MudSelectItem Value="@(flag.ToString())">@flag</MudSelectItem>
             }
         </MudSelect>
-        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags3))" @bind-Value="_unitFlags3" @bind-SelectedValues="_unitFlags3Selection" Label="Unit Flags 3" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@cssClass">
+        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetUnitFlags3))" @bind-Value="_unitFlags3" @bind-SelectedValues="_unitFlags3Selection" Label="Unit Flags 3" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@mudElementClass">
             @foreach (UnitFlags3 flag in Enum.GetValues<UnitFlags3>())
             {
                 <MudSelectItem Value="@(flag.ToString())">@flag</MudSelectItem>
             }
         </MudSelect>
-        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetFlagsExtra))" @bind-Value="_flagsExtra" @bind-SelectedValues="_flagsExtraSelection" Label="Flags Extra" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@cssClass">
+        <MudSelect T="string" MultiSelectionTextFunc="@(new Func<List<string>, string>(SetFlagsExtra))" @bind-Value="_flagsExtra" @bind-SelectedValues="_flagsExtraSelection" Label="Flags Extra" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" MultiSelection="true" Class="@mudElementClass">
             @foreach (FlagsExtra flag in Enum.GetValues<FlagsExtra>())
             {
                 <MudSelectItem Value="@(flag.ToString())">@flag</MudSelectItem>
             }
         </MudSelect>
-        <MudNumericField @bind-Value="Creature.HealthModifier" Label="Health Modifier" Variant="Variant.Outlined" HideSpinButtons="true" Class="@cssClass" />
-        <MudNumericField @bind-Value="Creature.DamageModifier" Label="Damage Modifier" Variant="Variant.Outlined" HideSpinButtons="true" Class="@cssClass" />
+        <MudNumericField @bind-Value="Creature.HealthModifier" Label="Health Modifier" Variant="Variant.Outlined" HideSpinButtons="true" Class="@mudElementClass" />
+        <MudNumericField @bind-Value="Creature.DamageModifier" Label="Damage Modifier" Variant="Variant.Outlined" HideSpinButtons="true" Class="@mudElementClass" />
 
     </MudItem>
 
 
 
-    <MudItem xs="2" />
-    <MudItem xs="8">
-        <MudTextField @bind-Value="Creature.Name" Label="Name" Variant="Variant.Outlined" />
-    </MudItem>
-    <MudItem xs="2" />
+    <MudItem xs="3" Class="@mudItemClass">
+        <MudNumericField @bind-Value="Creature.SoundId" Label="Sound" Variant="Variant.Outlined" HideSpinButtons="true" Class="@mudElementClass" />
 
-    <MudItem xs="3" />
-    <MudItem xs="6">
-        <MudTextField @bind-Value="Creature.SubName" Label="Sub Name" />
     </MudItem>
-    <MudItem xs="3" />
+    <MudItem xs="6" Class="@mudItemClass">
+        <MudTextField @bind-Value="Creature.Name" Label="Name" Class="@mudElementClass" />
+    </MudItem>
+    <MudItem xs="3" Class="@mudItemClass">
+        <MudNumericField @bind-Value="Creature.ArmorModifier" Label="Armor Modifier" Variant="Variant.Outlined" HideSpinButtons="true" Class="@mudElementClass" />
+    </MudItem>
+
+    <MudItem xs="3" Class="@mudItemClass">
+        <MudSelect T="bool" @bind-Value="Creature.RegenHealth" Label="Regenerate Health" Variant="Variant.Outlined" Class="@mudElementClass">
+            <MudSelectItem Value="true">On</MudSelectItem>
+            <MudSelectItem Value="false">Off</MudSelectItem>
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="1" Class="@mudItemClass"/>
+    <MudItem xs="4" Class="@mudItemClass">
+        <MudTextField @bind-Value="Creature.SubName" Label="Sub Name" Class="@mudElementClass" />
+    </MudItem>
+    <MudItem xs="1" Class="@mudItemClass"/>
+    <MudItem xs="3" Class="@mudItemClass">
+        <ListWithAdd Numbers="Creature.Auras" Class="@mudElementClass" Style="width:100%"/>
+    </MudItem>
 
 
 </MudGrid>
@@ -149,6 +163,7 @@
 
 
 
-    string cssClass = "pb-2 pt-2";
+    string mudElementClass = "pb-2 pt-2";
+    string mudItemClass = "pb-0 pt-0";
 
 }

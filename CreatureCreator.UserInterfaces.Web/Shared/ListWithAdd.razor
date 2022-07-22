@@ -1,0 +1,38 @@
+﻿@inherits MudComponentBase
+
+<MudMenu FullWidth="true" ActivationEvent="@MouseEvent.LeftClick" AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomCenter" Style="width:100%">
+    <ActivatorContent>
+        <MudNumericField @ref="inputRef" @bind-Value="_input" Label="Auras" HideSpinButtons="true" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Add" AdornmentColor="Color.Default" OnAdornmentClick="Add" />
+    </ActivatorContent>
+    <ChildContent>
+        @foreach (var number in Numbers)
+        {
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="pa-1 ma1">
+                <MudText Color="Color.Default">@number</MudText><MudIcon Icon="@Icons.Filled.Clear" />
+            </MudStack>
+        }
+    </ChildContent>
+</MudMenu>
+
+@code {
+    [Parameter]
+    public List<int> Numbers { get; set; }
+
+    int? _input;
+    MudNumericField<int?> inputRef;
+    async Task Add()
+    {
+        if (_input != null && _input != 0)
+        {
+            if (!Numbers.Any(n => n == _input))
+                Numbers.Add((int)_input);
+            _input = null;
+            await inputRef.FocusAsync();
+        }
+    }
+
+    void Remove(int number)
+    {
+        Numbers.Remove(number);
+    }
+}

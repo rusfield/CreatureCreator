@@ -42,16 +42,17 @@ namespace CreatureCreator.Infrastructure.Helpers
                 Scale = creature.Scale,
                 HealthModifier = creature.HealthModifier,
                 DamageModifier = creature.DamageModifier,
+                ArmorModifier = creature.ArmorModifier,
                 UnitFlags = (long)creature.UnitFlags,
                 UnitFlags2 = (long)creature.UnitFlags2,
                 UnitFlags3 = (long)creature.UnitFlags3,
                 FlagsExtra = (long)creature.FlagsExtra,
+                RegenHealth = creature.RegenHealth,
 
                 VerifiedBuild = _verifiedBuild,
 
                 // Custom default values
                 AiName = "SmartAI",
-
                 BaseAttackTime = 2000,
                 BaseVariance = 1,
                 ExperienceModifier = 1,
@@ -61,7 +62,7 @@ namespace CreatureCreator.Infrastructure.Helpers
                 ManaModifierExtra = 1,
                 RangeAttackTime = 2000,
                 RangeVariance = 1,
-                RegenHealth = true,
+
                 SpeedRun = 1.14286,
                 SpeedWalk = 1
             };
@@ -143,6 +144,15 @@ namespace CreatureCreator.Infrastructure.Helpers
             {
                 DisplayId = creature.Id,
                 VerifiedBuild = _verifiedBuild
+            };
+        }
+
+        public CreatureTemplateAddon CreateCreatureTemplateAddon(CreatureDto creature)
+        {
+            return new CreatureTemplateAddon()
+            {
+                Entry = creature.Id,
+                Auras = string.Join(" ", creature.Auras)
             };
         }
 
