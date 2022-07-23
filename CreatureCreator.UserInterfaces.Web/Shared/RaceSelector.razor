@@ -7,7 +7,7 @@
     </ActivatorContent>
     <ChildContent>
 
-        @foreach (var race in new DisplayRaces().GetPlayableDisplayRaces())
+        @foreach (var race in new Races().GetPlayableDisplayRaces())
         {
             <MudMenuItem OnClick="@(() => RaceSelected(race))" Class="ma-2 rounded" Style="@($"height:56px;width:56px;background-image:url('images/races/{Gender.ToString().ToLower()}/{race.ToString().Replace("_", "").ToLower()}.jpg');background-size:cover;background-position:center")">
                 @*<MudText>@race.ToDisplayString()</MudText>*@
@@ -26,7 +26,7 @@
     public Genders Gender { get; set; }
 
     [Parameter]
-    public EventCallback<DisplayRaces> RaceSelectedCallback { get; set; }
+    public EventCallback<Races> RaceSelectedCallback { get; set; }
 
     protected override void OnInitialized()
     {
@@ -34,7 +34,7 @@
         _transformOrigin = Gender == Genders.Male ? Origin.BottomRight : Origin.BottomLeft;
     }
 
-    async void RaceSelected(DisplayRaces race)
+    async void RaceSelected(Races race)
     {
         await RaceSelectedCallback.InvokeAsync(race);
     }

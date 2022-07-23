@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CreatureCreator.Core.Enums
 {
-    public enum DisplayRaces
+    public enum Races
     {
         NONE = 0,
         HUMAN = 1,

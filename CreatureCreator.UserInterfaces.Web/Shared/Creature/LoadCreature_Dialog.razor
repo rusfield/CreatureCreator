@@ -74,17 +74,17 @@
         }
     }
 
-    private async Task SelectNewMale(DisplayRaces race)
+    private async Task SelectNewMale(Races race)
     {
         await SelectionNew(race, Genders.Male);
     }
 
-    private async Task SelectNewFemale(DisplayRaces race)
+    private async Task SelectNewFemale(Races race)
     {
         await SelectionNew(race, Genders.Female);
     }
 
-    private async Task SelectionNew(DisplayRaces race, Genders gender)
+    private async Task SelectionNew(Races race, Genders gender)
     {
         var creature = await Service.GetCreatureByRaceAndGender(race, gender, loaderProgressRef.SetLoading);
         Close(creature);

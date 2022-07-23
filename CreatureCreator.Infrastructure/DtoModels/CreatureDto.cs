@@ -9,7 +9,7 @@ namespace CreatureCreator.Infrastructure.DtoModels
 {
     public class CreatureDto
     {
-        public CreatureDto(int id, Genders gender, DisplayRaces race)
+        public CreatureDto(int id, Genders gender, Races race)
         {
             Id = id;
             Gender = gender;
@@ -18,7 +18,7 @@ namespace CreatureCreator.Infrastructure.DtoModels
 
         public int Id { get; set; }
         public Genders Gender { get; set; }
-        public DisplayRaces Race { get; set; }
+        public Races Race { get; set; }
         public string? Name { get; set; } = "New Creature";
         public string? SubName { get; set; } = null;
         public int Level { get; set; } = 30;

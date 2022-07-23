@@ -11,7 +11,7 @@ namespace CreatureCreator.Infrastructure.DtoModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DisplayRaces Race { get; set; }
+        public Races Race { get; set; }
         public Genders Gender { get; set; }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using CreatureCreator.Core.Enums;
-using CreatureCreator.Core.Models;
-using CreatureCreator.Infrastructure.DtoModels;
-using CreatureCreator.Infrastructure.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,358 +7,79 @@ using System.Threading.Tasks;
 
 namespace CreatureCreator.Infrastructure.Helpers
 {
-    public class ModelHelper
+    public static class ModelHelper
     {
-        int _verifiedBuild;
-
-        public long TableHashCreatureDisplayInfoOption { get; } = 2294684390;
-        public long TableHashNpcModelItemSlotDisplayInfo { get; } = 1992314007;
-        public long TableHashCreatureDisplayInfoExtra { get; } = 1722140087;
-        public long TableHashCreatureDisplayInfo { get; } = 3218799089;
-
-
-
-        public ModelHelper(int verifiedBuild)
+        public static int? GetModelIdByRaceAndGenders(Races race, Genders gender, Dictionary<int, int> customizations)
         {
-            _verifiedBuild = verifiedBuild;
-        }
 
-        public CreatureTemplate CreateCreatureTemplate(CreatureDto creature)
-        {
-            return new CreatureTemplate()
-            {
-                Entry = creature.Id,
-                Name = creature.Name,
-                Faction = creature.Faction,
-                MaxLevel = creature.Level,
-                MinLevel = creature.Level,
-                Rank = creature.Rank,
-                SubName = creature.SubName,
-                Type = creature.CreatureType,
-                UnitClass = creature.CreatureUnitClass,
-                Scale = creature.Scale,
-                HealthModifier = creature.HealthModifier,
-                DamageModifier = creature.DamageModifier,
-                ArmorModifier = creature.ArmorModifier,
-                UnitFlags = (long)creature.UnitFlags,
-                UnitFlags2 = (long)creature.UnitFlags2,
-                UnitFlags3 = (long)creature.UnitFlags3,
-                FlagsExtra = (long)creature.FlagsExtra,
-                RegenHealth = creature.RegenHealth,
+            /* Comments:
+             * These models are from CreatureModelData. The FileDataId points correctly to character/{race}/{gender}/{race}{gender}.m2.
+             * Most have 1 but some have 0 (worgen) in SizeClass. Also, Flags are different. Idk what they are all used for.
+             * */
 
-                VerifiedBuild = _verifiedBuild,
-
-                // Custom default values
-                AiName = "SmartAI",
-                BaseAttackTime = 2000,
-                BaseVariance = 1,
-                ExperienceModifier = 1,
-                HealthModifierExtra = 1,
-                HoverHeight = 1,
-                ManaModifier = 1,
-                ManaModifierExtra = 1,
-                RangeAttackTime = 2000,
-                RangeVariance = 1,
-
-                SpeedRun = 1.14286,
-                SpeedWalk = 1
-            };
-        }
-
-        public CreatureTemplate UpdateCreatureTemplate(CreatureDto creature, CreatureTemplate creatureTemplate)
-        {
-            creatureTemplate.Name = creature.Name;
-            creatureTemplate.Faction = creature.Faction;
-            creatureTemplate.MaxLevel = creature.Level;
-            creatureTemplate.MinLevel = creature.Level;
-            creatureTemplate.Rank = creature.Rank;
-            creatureTemplate.SubName = creature.SubName;
-            creatureTemplate.Type = creature.CreatureType;
-            creatureTemplate.UnitClass = creature.CreatureUnitClass;
-            creatureTemplate.Scale = creature.Scale;
-            creatureTemplate.HealthModifier = creature.HealthModifier;
-            creatureTemplate.DamageModifier = creature.DamageModifier;
-            creatureTemplate.ArmorModifier = creature.ArmorModifier;
-            creatureTemplate.UnitFlags = (long)creature.UnitFlags;
-            creatureTemplate.UnitFlags2 = (long)creature.UnitFlags2;
-            creatureTemplate.UnitFlags3 = (long)creature.UnitFlags3;
-            creatureTemplate.FlagsExtra = (long)creature.FlagsExtra;
-            creatureTemplate.RegenHealth = creature.RegenHealth;
-
-            return creatureTemplate;
-        }
-
-        public CreatureEquipTemplate CreateCreatureEquipTemplate(CreatureDto creature)
-        {
-            return new CreatureEquipTemplate()
-            {
-                Id = 1,
-                CreatureId = creature.Id,
-                ItemId1 = creature.MainHandItemId ?? 0,
-                AppearanceModId1 = creature.MainHandItemAppearanceModifierId ?? 0,
-                ItemVisual1 = creature.MainHandItemVisual ?? 0,
-                ItemId2 = creature.OffHandItemId ?? 0,
-                AppearanceModId2 = creature.OffHandItemAppearanceModifierId ?? 0,
-                ItemVisual2 = creature.OffHandItemVisual ?? 0,
-                ItemId3 = creature.RangedItemId ?? 0,
-                AppearanceModId3 = creature.RangedItemAppearanceModifierId ?? 0,
-                ItemVisual3 = creature.RangedItemVisual ?? 0,
-                VerifiedBuild = _verifiedBuild
-            };
-        }
-
-        public CreatureEquipTemplate UpdateCreatureEquipTemplate(CreatureDto creature, CreatureEquipTemplate creatureEquipTemplate)
-        {
-            creatureEquipTemplate.ItemId1 = creature.MainHandItemId ?? 0;
-            creatureEquipTemplate.AppearanceModId1 = creature.MainHandItemAppearanceModifierId ?? 0;
-            creatureEquipTemplate.ItemVisual1 = creature.MainHandItemVisual ?? 0;
-
-            creatureEquipTemplate.ItemId2 = creature.OffHandItemId ?? 0;
-            creatureEquipTemplate.AppearanceModId2 = creature.OffHandItemAppearanceModifierId ?? 0;
-            creatureEquipTemplate.ItemVisual2 = creature.OffHandItemVisual ?? 0;
-
-            creatureEquipTemplate.ItemId3 = creature.RangedItemId ?? 0;
-            creatureEquipTemplate.AppearanceModId3 = creature.RangedItemAppearanceModifierId ?? 0;
-            creatureEquipTemplate.ItemVisual3 = creature.RangedItemVisual ?? 0;
-
-            return creatureEquipTemplate;
-        }
-
-        public CreatureTemplateModel CreateCreatureTemplateModel(CreatureDto creature)
-        {
-            return new CreatureTemplateModel()
-            {
-                CreatureId = creature.Id,
-                CreatureDisplayId = creature.Id,
-                Probability = 1,
-                DisplayScale = 1,
-                VerifiedBuild = _verifiedBuild
-            };
-        }
-
-        public CreatureTemplateModel UpdateCreatureTemplateModel(CreatureDto creature, CreatureTemplateModel creatureTemplateModel)
-        {
-            // There are currently no values in CreatureTemplateModel that are customizable. 
-            return creatureTemplateModel;
-        }
-
-        public CreatureModelInfo CreateCreatureModelInfo(CreatureDto creature)
-        {
-            return new CreatureModelInfo()
-            {
-                DisplayId = creature.Id,
-                VerifiedBuild = _verifiedBuild
-            };
-        }
-
-        public CreatureModelInfo UpdateCreatureModelInfo(CreatureDto creature, CreatureModelInfo creatureModelInfo)
-        {
-            // There are currently no values in CreatureTemplateModel that are customizable. 
-            return creatureModelInfo;
-        }
-
-        public CreatureTemplateAddon CreateCreatureTemplateAddon(CreatureDto creature)
-        {
-            return new CreatureTemplateAddon()
-            {
-                Entry = creature.Id,
-                Auras = string.Join(" ", creature.Auras)
-            };
-        }
-
-        public CreatureTemplateAddon UpdateCreatureTemplateAddon(CreatureDto creature, CreatureTemplateAddon creatureTemplateAddon)
-        {
-            creatureTemplateAddon.Auras = string.Join(" ", creature.Auras);
-            return creatureTemplateAddon;
-        }
-
-        public CreatureDisplayInfo CreateCreatureDisplayInfo(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
-        {
-            hotfixes.Add(new HotfixData()
-            {
-                Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
-                RecordId = creature.Id,
-                Status = HotfixStatuses.VALID,
-                TableHash = TableHashCreatureDisplayInfo,
-                UniqueId = creature.Id,
-                VerifiedBuild = _verifiedBuild
-            });
 
             // For orcs and mag'har orcs male
             bool upright = true;
-            if (creature.Gender == Genders.Male && creature.Race == DisplayRaces.ORC)
+            if (gender == Genders.Male && race == Races.ORC)
             {
-                upright = creature.Customizations.Any(c => c.Value == 439);
+                upright = customizations.Any(c => c.Value == 439);
             }
-            else if (creature.Gender == Genders.Male && creature.Race == DisplayRaces.MAGHAR_ORC)
+            else if (gender == Genders.Male && race == Races.MAGHAR_ORC)
             {
-                upright = creature.Customizations.Any(c => c.Value == 3427);
-            }
-
-            return new CreatureDisplayInfo()
-            {
-                Id = creature.Id,
-                ExtendedDisplayInfoId = creature.Id,
-                Gender = creature.Gender,
-                ModelId = new CreatureDisplayInfoExtra().GetModelIdByRaceAndGenders(creature.Race, creature.Gender, upright) ?? throw new NotImplementedException(),
-                UnarmedWeaponType = -1,
-                CreatureModelAlpha = 255,
-                CreatureModelScale = 1,
-                PetInstanceScale = 1,
-                SizeClass = 1,
-                SoundId = creature.SoundId,
-                VerifiedBuild = _verifiedBuild
-            };
-        }
-
-        public List<NpcModelItemSlotDisplayInfo> CreateNpcModelItemSlotDisplayInfos(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
-        {
-            int npcModelId = creature.Id;
-
-            var result = new List<NpcModelItemSlotDisplayInfo>();
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.HEAD,
-                ItemDisplayInfoId = creature.HeadItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.HEAD,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.SHOULDERS,
-                ItemDisplayInfoId = creature.ShouldersItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.SHOULDERS,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.SHIRT,
-                ItemDisplayInfoId = creature.ShirtItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.SHIRT,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.CHEST,
-                ItemDisplayInfoId = creature.ChestItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.CHEST,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.WAIST,
-                ItemDisplayInfoId = creature.WaistItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.WAIST,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.LEGS,
-                ItemDisplayInfoId = creature.LegsItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.LEGS,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.FEET,
-                ItemDisplayInfoId = creature.FeetItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.FEET,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.WRISTS,
-                ItemDisplayInfoId = creature.WristsItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.WRISTS,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.HANDS,
-                ItemDisplayInfoId = creature.HandsItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.HANDS,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.TABARD,
-                ItemDisplayInfoId = creature.TabardItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.TABARD,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.BACK,
-                ItemDisplayInfoId = creature.BackItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.BACK,
-                NpcModelId = npcModelId
-            });
-            result.Add(new NpcModelItemSlotDisplayInfo()
-            {
-                Id = creature.Id + (int)ArmorSlots.QUIVER,
-                ItemDisplayInfoId = creature.QuiverItemDisplayInfoId ?? 0,
-                ItemSlot = ArmorSlots.QUIVER,
-                NpcModelId = npcModelId
-            });
-
-            foreach (var item in result)
-            {
-                hotfixes.Add(new HotfixData()
-                {
-                    Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
-                    RecordId = item.Id,
-                    Status = HotfixStatuses.VALID,
-                    TableHash = TableHashNpcModelItemSlotDisplayInfo,
-                    UniqueId = creature.Id,
-                    VerifiedBuild = _verifiedBuild
-                });
+                upright = customizations.Any(c => c.Value == 3427);
             }
 
-            return result;
-        }
 
-        public List<CreatureDisplayInfoOption> CreateCreatureDisplayInfoOptions(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
-        {
-            int creatureDisplayInfoExtraId = creature.Id;
-            var result = new List<CreatureDisplayInfoOption>();
-            foreach (var customization in creature.Customizations)
+            return (race, gender) switch
             {
-                result.Add(new CreatureDisplayInfoOption()
-                {
-                    Id = creature.Id + customization.Key,
-                    ChrCustomizationOptionId = customization.Key,
-                    ChrCustomizationChoiceId = customization.Value,
-                    CreatureDisplayInfoExtraId = creatureDisplayInfoExtraId
-                });
-                hotfixes.Add(new HotfixData()
-                {
-                    Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
-                    RecordId = creature.Id + customization.Key,
-                    Status = HotfixStatuses.VALID,
-                    UniqueId = creature.Id,
-                    TableHash = TableHashCreatureDisplayInfoOption,
-                    VerifiedBuild = _verifiedBuild
-                });
-            }
-            return result;
-        }
+                (Races.HUMAN, Genders.Male) => 7661,
+                (Races.HUMAN, Genders.Female) => 7599,
+                (Races.ORC, Genders.Male) => upright ? 10882 : 6838,
+                (Races.ORC, Genders.Female) => 7200,
+                (Races.DWARF, Genders.Male) => 5408,
+                (Races.DWARF, Genders.Female) => 7203,
+                (Races.NIGHT_ELF, Genders.Male) => 7369,
+                (Races.NIGHT_ELF, Genders.Female) => 7300,
+                (Races.UNDEAD, Genders.Male) => 7233,
+                (Races.UNDEAD, Genders.Female) => 7578,
+                (Races.TAUREN, Genders.Male) => 7399,
+                (Races.TAUREN, Genders.Female) => 7576,
+                (Races.GNOME, Genders.Male) => 6837,
+                (Races.GNOME, Genders.Female) => 7130,
+                (Races.TROLL, Genders.Male) => 7778,
+                (Races.TROLL, Genders.Female) => 7793,
+                (Races.GOBLIN, Genders.Male) => 831,
+                (Races.GOBLIN, Genders.Female) => 832,
+                (Races.BLOOD_ELF, Genders.Male) => 8102,
+                (Races.BLOOD_ELF, Genders.Female) => 8103,
+                (Races.DRAENEI, Genders.Male) => 7629,
+                (Races.DRAENEI, Genders.Female) => 7692,
+                (Races.WORGEN, Genders.Male) => 3141,
+                (Races.WORGEN, Genders.Female) => 3142,
+                (Races.DARK_IRON_DWARF, Genders.Male) => 10784,
+                (Races.DARK_IRON_DWARF, Genders.Female) => 10785,
+                (Races.MAGHAR_ORC, Genders.Male) => upright ? 10883 : 10844, // Referencing orc?
+                (Races.MAGHAR_ORC, Genders.Female) => 10845, // Referencing orc?
+                (Races.PANDAREN, Genders.Male) => 3967,
+                (Races.PANDAREN, Genders.Female) => 3968,
+                (Races.KUL_TIRAN, Genders.Male) => 10531,
+                (Races.KUL_TIRAN, Genders.Female) => 10532,
+                (Races.NIGHTBORNE, Genders.Male) => 9930,
+                (Races.NIGHTBORNE, Genders.Female) => 9931,
+                (Races.VOID_ELF, Genders.Male) => 9934,
+                (Races.VOID_ELF, Genders.Female) => 9935,
+                (Races.MECHAGNOME, Genders.Male) => 11488,
+                (Races.MECHAGNOME, Genders.Female) => 11489,
+                (Races.VULPERA, Genders.Male) => 10786,
+                (Races.VULPERA, Genders.Female) => 10787,
+                (Races.ZANDALARI_TROLL, Genders.Male) => 10394,
+                (Races.ZANDALARI_TROLL, Genders.Female) => 10395,
+                (Races.LIGHTFORGED_DRAENEI, Genders.Male) => 9936,
+                (Races.LIGHTFORGED_DRAENEI, Genders.Female) => 9937,
+                (Races.HIGHMOUNTAIN_TAUREN, Genders.Male) => 9932,
+                (Races.HIGHMOUNTAIN_TAUREN, Genders.Female) => 9933,
 
-        public CreatureDisplayInfoExtra CreateCreatureDisplayInfoExtra(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
-        {
-            hotfixes.Add(new HotfixData()
-            {
-                Id = hotfixes.Count > 0 ? hotfixes.Max(h => h.Id) + 1 : hotfixId,
-                RecordId = creature.Id,
-                Status = HotfixStatuses.VALID,
-                UniqueId = creature.Id,
-                TableHash = TableHashCreatureDisplayInfoExtra,
-                VerifiedBuild = _verifiedBuild
-            });
-            return new CreatureDisplayInfoExtra()
-            {
-                Id = creature.Id,
-                DisplayRaceId = creature.Race,
-                DisplaySexId = creature.Gender
+                _ => null
             };
         }
     }

@@ -13,7 +13,7 @@ namespace CreatureCreator.Core.Models
     {
         [Key]
         public int Id { get; set; }
-        public DisplayRaces DisplayRaceId { get; set; }
+        public Races DisplayRaceId { get; set; }
         public Genders DisplaySexId { get; set; }
 
     }

@@ -9,37 +9,37 @@ namespace CreatureCreator.Infrastructure.Extensions
 {
     public static class DisplayRaceExtensions
     {
-        public static List<DisplayRaces> GetPlayableDisplayRaces(this DisplayRaces displayRacesEnum)
+        public static List<Races> GetPlayableDisplayRaces(this Races displayRacesEnum)
         {
-            return new List<DisplayRaces>()
+            return new List<Races>()
             {
-                DisplayRaces.BLOOD_ELF,
-                DisplayRaces.DARK_IRON_DWARF,
-                DisplayRaces.DRAENEI,
-                DisplayRaces.DWARF,
-                DisplayRaces.GNOME,
-                DisplayRaces.GOBLIN,
-                DisplayRaces.HIGHMOUNTAIN_TAUREN,
-                DisplayRaces.HUMAN,
-                DisplayRaces.KUL_TIRAN,
-                DisplayRaces.LIGHTFORGED_DRAENEI,
-                DisplayRaces.MAGHAR_ORC,
-                DisplayRaces.MECHAGNOME,
-                DisplayRaces.NIGHTBORNE,
-                DisplayRaces.NIGHT_ELF,
-                DisplayRaces.ORC,
-                DisplayRaces.PANDAREN,
-                DisplayRaces.TAUREN,
-                DisplayRaces.TROLL,
-                DisplayRaces.UNDEAD,
-                DisplayRaces.VOID_ELF,
-                DisplayRaces.VULPERA,
-                DisplayRaces.WORGEN,
-                DisplayRaces.ZANDALARI_TROLL
+                Races.BLOOD_ELF,
+                Races.DARK_IRON_DWARF,
+                Races.DRAENEI,
+                Races.DWARF,
+                Races.GNOME,
+                Races.GOBLIN,
+                Races.HIGHMOUNTAIN_TAUREN,
+                Races.HUMAN,
+                Races.KUL_TIRAN,
+                Races.LIGHTFORGED_DRAENEI,
+                Races.MAGHAR_ORC,
+                Races.MECHAGNOME,
+                Races.NIGHTBORNE,
+                Races.NIGHT_ELF,
+                Races.ORC,
+                Races.PANDAREN,
+                Races.TAUREN,
+                Races.TROLL,
+                Races.UNDEAD,
+                Races.VOID_ELF,
+                Races.VULPERA,
+                Races.WORGEN,
+                Races.ZANDALARI_TROLL
             };
         }
 
-        public static string ToDisplayString(this DisplayRaces displayRacesEnum)
+        public static string ToDisplayString(this Races displayRacesEnum)
         {
             var split = displayRacesEnum.ToString().Split('_');
             string name = "";
