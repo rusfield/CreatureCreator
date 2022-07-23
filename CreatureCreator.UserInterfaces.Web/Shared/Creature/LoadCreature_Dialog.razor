@@ -53,21 +53,25 @@
     MudNumericField<int?> creatureDisplayIdRef;
     LoaderProgress loaderProgressRef;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (CreatureId != null)
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
         {
-            await CreatureIdDebounce(CreatureId.ToString());
+            if (CreatureId != null)
+            {
+                await CreatureIdDebounce(CreatureId.ToString());
+            }
+            else if (CreatureDisplayId != null)
+            {
+                await CreatureDisplayIdDebounce(CreatureDisplayId.ToString());
+            }
+            else if (CharacterName != null)
+            {
+                await CharacterNameDebounce(CharacterName);
+            }
+            await base.OnInitializedAsync();
         }
-        else if (CreatureDisplayId != null)
-        {
-            await CreatureDisplayIdDebounce(CreatureDisplayId.ToString());
-        }
-        else if (CharacterName != null)
-        {
-            await CharacterNameDebounce(CharacterName);
-        }
-        await base.OnInitializedAsync();
     }
 
     private async Task SelectNewMale(DisplayRaces race)

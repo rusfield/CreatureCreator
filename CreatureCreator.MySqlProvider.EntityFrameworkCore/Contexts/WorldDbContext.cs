@@ -46,6 +46,11 @@ namespace CreatureCreator.MySqlProvider.EntityFrameworkCore.Contexts
             {
                 entity.ToTable("creature_model_info");
             });
+
+            modelBuilder.Entity<CreatureTemplateAddon>(entity =>
+            {
+                entity.ToTable("creature_template_addon");
+            });
         }
     }
 }

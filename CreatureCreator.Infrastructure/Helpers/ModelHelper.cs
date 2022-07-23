@@ -79,7 +79,14 @@ namespace CreatureCreator.Infrastructure.Helpers
             creatureTemplate.Type = creature.CreatureType;
             creatureTemplate.UnitClass = creature.CreatureUnitClass;
             creatureTemplate.Scale = creature.Scale;
-            creatureTemplate.Type = creature.CreatureType;
+            creatureTemplate.HealthModifier = creature.HealthModifier;
+            creatureTemplate.DamageModifier = creature.DamageModifier;
+            creatureTemplate.ArmorModifier = creature.ArmorModifier;
+            creatureTemplate.UnitFlags = (long)creature.UnitFlags;
+            creatureTemplate.UnitFlags2 = (long)creature.UnitFlags2;
+            creatureTemplate.UnitFlags3 = (long)creature.UnitFlags3;
+            creatureTemplate.FlagsExtra = (long)creature.FlagsExtra;
+            creatureTemplate.RegenHealth = creature.RegenHealth;
 
             return creatureTemplate;
         }
@@ -147,6 +154,12 @@ namespace CreatureCreator.Infrastructure.Helpers
             };
         }
 
+        public CreatureModelInfo UpdateCreatureModelInfo(CreatureDto creature, CreatureModelInfo creatureModelInfo)
+        {
+            // There are currently no values in CreatureTemplateModel that are customizable. 
+            return creatureModelInfo;
+        }
+
         public CreatureTemplateAddon CreateCreatureTemplateAddon(CreatureDto creature)
         {
             return new CreatureTemplateAddon()
@@ -156,10 +169,10 @@ namespace CreatureCreator.Infrastructure.Helpers
             };
         }
 
-        public CreatureModelInfo UpdateCreatureModelInfo(CreatureDto creature, CreatureModelInfo creatureModelInfo)
+        public CreatureTemplateAddon UpdateCreatureTemplateAddon(CreatureDto creature, CreatureTemplateAddon creatureTemplateAddon)
         {
-            // There are currently no values in CreatureTemplateModel that are customizable. 
-            return creatureModelInfo;
+            creatureTemplateAddon.Auras = string.Join(" ", creature.Auras);
+            return creatureTemplateAddon;
         }
 
         public CreatureDisplayInfo CreateCreatureDisplayInfo(CreatureDto creature, List<HotfixData> hotfixes, int hotfixId)
@@ -173,17 +186,30 @@ namespace CreatureCreator.Infrastructure.Helpers
                 UniqueId = creature.Id,
                 VerifiedBuild = _verifiedBuild
             });
+
+            // For orcs and mag'har orcs male
+            bool upright = true;
+            if (creature.Gender == Genders.Male && creature.Race == DisplayRaces.ORC)
+            {
+                upright = creature.Customizations.Any(c => c.Value == 439);
+            }
+            else if (creature.Gender == Genders.Male && creature.Race == DisplayRaces.MAGHAR_ORC)
+            {
+                upright = creature.Customizations.Any(c => c.Value == 3427);
+            }
+
             return new CreatureDisplayInfo()
             {
                 Id = creature.Id,
                 ExtendedDisplayInfoId = creature.Id,
                 Gender = creature.Gender,
-                ModelId = new CreatureDisplayInfoExtra().GetModelIdByRaceAndGenders(creature.Race, creature.Gender) ?? throw new NotImplementedException(),
+                ModelId = new CreatureDisplayInfoExtra().GetModelIdByRaceAndGenders(creature.Race, creature.Gender, upright) ?? throw new NotImplementedException(),
                 UnarmedWeaponType = -1,
                 CreatureModelAlpha = 255,
                 CreatureModelScale = 1,
                 PetInstanceScale = 1,
                 SizeClass = 1,
+                SoundId = creature.SoundId,
                 VerifiedBuild = _verifiedBuild
             };
         }

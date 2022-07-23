@@ -61,7 +61,7 @@
     protected override async Task OnInitializedAsync()
     {
         systemStatus = await Service.ValidateDatabase();
-        if (!systemStatus.Any(s => s.Status != ValidationStatuses.OK))
+        // if (!systemStatus.Any(s => s.Status != ValidationStatuses.OK))
             creatures = await Service.GetCreatures();
 
         await base.OnInitializedAsync();

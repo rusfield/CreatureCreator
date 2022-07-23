@@ -269,11 +269,36 @@ namespace CreatureCreator.Infrastructure.Services
             var modelHelper = new ModelHelper(_verifiedBuild);
             if (creature.IsUpdate)
             {
-                await _mySql.UpdateAsync(modelHelper.CreateCreatureTemplate(creature));
-                await _mySql.UpdateAsync(modelHelper.CreateCreatureTemplateModel(creature));
-                await _mySql.UpdateAsync(modelHelper.CreateCreatureEquipTemplate(creature));
-                await _mySql.UpdateAsync(modelHelper.CreateCreatureModelInfo(creature));
-                await _mySql.UpdateAsync(modelHelper.CreateCreatureTemplateAddon(creature));
+                var creatureTemplate = await _mySql.GetAsync<CreatureTemplate>(c => c.Entry == creature.Id);
+                if (creatureTemplate != null)
+                    await _mySql.UpdateAsync(modelHelper.UpdateCreatureTemplate(creature, creatureTemplate));
+                else
+                    await _mySql.AddAsync(modelHelper.CreateCreatureTemplate(creature));
+
+                var creatureTemplateModel = await _mySql.GetAsync<CreatureTemplateModel>(c => c.CreatureId == creature.Id);
+                if (creatureTemplateModel != null)
+                    await _mySql.UpdateAsync(modelHelper.UpdateCreatureTemplateModel(creature, creatureTemplateModel));
+                else
+                    await _mySql.AddAsync(modelHelper.CreateCreatureTemplateModel(creature));
+
+                var creatureEquipTemplate = await _mySql.GetAsync<CreatureEquipTemplate>(c => c.CreatureId == creature.Id);
+                if (creatureEquipTemplate != null)
+                    await _mySql.UpdateAsync(modelHelper.UpdateCreatureEquipTemplate(creature, creatureEquipTemplate));
+                else
+                    await _mySql.AddAsync(modelHelper.CreateCreatureEquipTemplate(creature));
+
+                var creatureModelInfo = await _mySql.GetAsync<CreatureModelInfo>(c => c.DisplayId == creature.Id);
+                if (creatureModelInfo != null)
+                    await _mySql.UpdateAsync(modelHelper.UpdateCreatureModelInfo(creature, creatureModelInfo));
+                else
+                    await _mySql.AddAsync(modelHelper.CreateCreatureModelInfo(creature));
+
+                var creatureTemplateAddon = await _mySql.GetAsync<CreatureTemplateAddon>(c => c.Entry == creature.Id);
+                if (creatureTemplateAddon != null)
+                    await _mySql.UpdateAsync(modelHelper.UpdateCreatureTemplateAddon(creature, creatureTemplateAddon));
+                else
+                    await _mySql.AddAsync(modelHelper.CreateCreatureTemplateAddon(creature));
+
 
                 // Delete from Hotfixes (re-added later in method)
                 await DeleteFromHotfix(creature.Id);
@@ -374,14 +399,14 @@ namespace CreatureCreator.Infrastructure.Services
             }
 
             var auras = new List<int>();
-            if(creatureTemplate != null)
+            if (creatureTemplate != null)
             {
                 progressCallback("Creature", $"Retrieving Auras", 25);
                 var creatureTemplateAddon = await _mySql.GetAsync<CreatureTemplateAddon>(c => c.Entry == creatureTemplate.Entry);
-                if(creatureTemplateAddon != null && !string.IsNullOrWhiteSpace(creatureTemplateAddon.Auras))
+                if (creatureTemplateAddon != null && !string.IsNullOrWhiteSpace(creatureTemplateAddon.Auras))
                 {
                     var auraStrings = creatureTemplateAddon.Auras.Split(' ');
-                    foreach(var auraString in auraStrings)
+                    foreach (var auraString in auraStrings)
                     {
                         if (int.TryParse(auraString.Trim(), out var aura) && aura != 0)
                             auras.Add(aura);
@@ -821,7 +846,7 @@ namespace CreatureCreator.Infrastructure.Services
 
             progressCallback("Item", $"Retrieving item", 20);
             var item = await _db2.GetAsync<Item>(c => c.Id == itemId);
-            if(item == null)
+            if (item == null)
             {
                 progressCallback("Item", $"Item not found", 100);
                 return result;
@@ -837,7 +862,7 @@ namespace CreatureCreator.Infrastructure.Services
             bool isRaidDrop = modifiedAppearances.Count == 4;
             bool isArtifact = modifiedAppearances.Count == 24;
 
-            
+
 
             foreach (var (modifiedAppearance, index) in modifiedAppearances.Select((value, idx) => (value, idx)))
             {
@@ -849,7 +874,7 @@ namespace CreatureCreator.Infrastructure.Services
                     progressCallback("Item", $"Item Appearance not found", Math.Min(50 + (50 / modifiedAppearances.Count * index), 99));
                     continue;
                 }
-                   
+
                 result.Add(new ItemDto()
                 {
                     ItemId = itemId,
