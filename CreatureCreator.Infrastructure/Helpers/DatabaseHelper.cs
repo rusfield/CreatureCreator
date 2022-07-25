@@ -353,5 +353,7 @@ namespace CreatureCreator.Infrastructure.Helpers
                 DisplaySexId = creature.Gender
             };
         }
+
+        public const string QueryCreateCreatureCreatorTable = $"";
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CreatureCreator.Core.Enums
+namespace CreatureCreator.Infrastructure.Enums
 {
     public enum ValidationStatuses
     {

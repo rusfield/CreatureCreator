@@ -6,10 +6,14 @@
 
 <MudLayout>
     <MudAppBar Elevation="0">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="0" Style="width:100%;">
-            <MudIconButton Icon="@Icons.Filled.TableRows" Color="Color.Inherit" Href="/" />
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="3" Style="width:100%;">
+            <MudIconButton Icon="@Icons.Filled.MonitorHeart" Color="Color.Inherit" Size="Size.Small" Href="/health" />
+             <MudIconButton Icon="@Icons.Filled.TableRows" Color="Color.Inherit" Size="Size.Small" Href="/dashboard" />
+            <MudText Color="Color.Inherit" Typo="Typo.h5">|</MudText>
             <MudIconButton Icon="@Icons.Filled.FaceRetouchingNatural" Size="Size.Large" Color="Color.Inherit" Href="/creature" />
-            <MudIconButton Icon="@Icons.Filled.MonitorHeart" Color="Color.Inherit" Href="/health" />
+            <MudText Color="Color.Inherit" Typo="Typo.h5">|</MudText>
+            <MudIconButton Icon="@Icons.Filled.Gavel" Color="Color.Inherit" Size="Size.Small" Href="#" />
+           
         </MudStack>
     </MudAppBar>
     @*

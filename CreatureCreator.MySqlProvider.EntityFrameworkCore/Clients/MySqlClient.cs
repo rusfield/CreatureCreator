@@ -114,16 +114,41 @@ namespace CreatureCreator.MySqlProvider.EntityFrameworkCore.Clients
 
             using (var command = SetContext<T>().Database.GetDbConnection().CreateCommand())
             {
-                command.CommandText = $"SHOW TABLES LIKE '{tableName}';";
+                command.CommandText = $"SHOW TABLES LIKE @tableName;";
                 command.CommandType = CommandType.Text;
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "tableName";
+                parameter.Value = tableName;
+                command.Parameters.Add(parameter);
 
                 SetContext<T>().Database.OpenConnection();
 
-                using (var result = command.ExecuteReader())
+                using (var result = await command.ExecuteReaderAsync())
                 {
                     return result.HasRows;
                 }
             }
+        }
+
+        public Task<bool> CreateCreatureCreatorTableIfNotExist()
+        {
+            throw new NotImplementedException();
+        }
+
+        async Task<bool> CreateTableIfNotExist<T>(string createQuery)
+            where T : class, ITrinityCore
+        {
+            var entityType = SetContext<T>().Model.FindEntityType(typeof(T));
+
+            using (var command = SetContext<T>().Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = $"{createQuery}";
+                command.CommandType = CommandType.Text;
+
+                SetContext<T>().Database.OpenConnection();
+                await command.ExecuteNonQueryAsync();
+            }
+            return true;
         }
     }
 }

@@ -1,0 +1,65 @@
+﻿@page "/dashboard"
+
+@using CreatureCreator.Infrastructure.Services
+@using CreatureCreator.Infrastructure.DtoModels
+
+@inject IDialogService DialogService
+@inject CreatureCreatorService Service
+
+<MudGrid>
+
+    <MudItem xs="6">
+        <MudTable Items="@creatures" Hover="true" @ref="@_table">
+            <HeaderContent>
+                <MudTh>@*Avatars*@</MudTh>
+                <MudTh>NAME</MudTh>
+                <MudTh>ID</MudTh>
+                <MudTh Style="text-align:right">ACTION</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Avatar"><MudAvatar Elevation="6" Image="@($"/images/races/{context.Gender.ToString().ToLower()}/{context.Race.ToString().ToLower().Replace("_","")}.jpg")" /></MudTd>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Id">@context.Id</MudTd>
+                <MudTd DataLabel="Action">
+                    <MudStack Row="true" Justify="Justify.FlexEnd">
+                        <MudIconButton Size="Size.Small" Color="Color.Info" Icon="@Icons.Material.Filled.Edit" Href="@($"/creature/{@context.Id}")" />
+                        <MudIconButton Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteCreature(@context.Id))" />
+                    </MudStack>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudPaper Class="d-flex flex-column align-center">
+                    <MudPagination Rectangular="true" Variant="Variant.Text" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="ma-2" SelectedChanged="PageChanged" />
+                </MudPaper>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
+
+
+
+@code {
+    MudTable<DashboardCreatureDto> _table;
+
+    List<DashboardCreatureDto> creatures;
+
+    protected override async Task OnInitializedAsync()
+    {
+        creatures = await Service.GetCreatures();
+        await base.OnInitializedAsync();
+    }
+
+
+
+    async void DeleteCreature(int creatureId)
+    {
+        await Service.DeleteCreatureAsync(creatureId);
+        creatures.RemoveAll(c => c.Id == creatureId);
+        this.StateHasChanged();
+    }
+
+    void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+}

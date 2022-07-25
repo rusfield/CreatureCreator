@@ -1,4 +1,4 @@
-﻿using CreatureCreator.Core.Enums;
+﻿using CreatureCreator.Infrastructure.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace CreatureCreator.Infrastructure.DtoModels
 {
     public class ValidationStatusDto
     {
-        public string Name { get; set; }
+        public SystemValidations Name { get; set; }
         public ValidationStatuses Status { get; set; }
         public string Description { get; set; }
     }

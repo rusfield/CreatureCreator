@@ -12,6 +12,7 @@ using CreatureCreator.Core.Enums;
 using CreatureCreator.Infrastructure.Extensions;
 using CreatureCreator.Infrastructure.Helpers;
 using System.Diagnostics;
+using CreatureCreator.Infrastructure.Enums;
 
 namespace CreatureCreator.Infrastructure.Services
 {
@@ -50,7 +51,7 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateCreatureId,
+                    Name = SystemValidations.CREATURE_ID,
                     Status = ValidationStatuses.ERROR,
                     Description = $"The Id is not within the configurated range. It should be equal or greater than {_idRangeFrom} and lower than {_idRangeTo}"
                 });
@@ -91,25 +92,14 @@ namespace CreatureCreator.Infrastructure.Services
         {
             var result = new List<ValidationStatusDto>();
 
-            bool worldServerIsRunning = false;
-            bool bNetServerIsRunning = false;
+
             bool mySqlIsRunning = false;
 
             var processes = Process.GetProcesses();
             foreach (var process in processes)
             {
                 var processName = process.ProcessName.ToLower();
-                if (processName.Contains("bnetserver"))
-                {
-                    bNetServerIsRunning = true;
-                    Console.WriteLine($"{processName} is running.");
-                }
-                else if (processName.Contains("worldserver"))
-                {
-                    worldServerIsRunning = true;
-                    Console.WriteLine($"{processName} is running.");
-                }
-                else if (processName.Contains("mysql"))
+                if (processName.Contains("mysql"))
                 {
                     mySqlIsRunning = true;
                     Console.WriteLine($"{processName} is running.");
@@ -125,19 +115,7 @@ namespace CreatureCreator.Infrastructure.Services
 
             result.Add(new ValidationStatusDto()
             {
-                Name = ValidationHelper.ValidateBNetServerProcess,
-                Status = bNetServerIsRunning ? ValidationStatuses.OK : ValidationStatuses.WARNING,
-                Description = bNetServerIsRunning ? "" : "Process is not running."
-            });
-            result.Add(new ValidationStatusDto()
-            {
-                Name = ValidationHelper.ValidateWorldServerProcess,
-                Status = worldServerIsRunning ? ValidationStatuses.OK : ValidationStatuses.WARNING,
-                Description = worldServerIsRunning ? "" : "Process is not running."
-            });
-            result.Add(new ValidationStatusDto()
-            {
-                Name = ValidationHelper.ValidateMySqlProcess,
+                Name = SystemValidations.MYSQL_PROCESS,
                 Status = mySqlIsRunning ? ValidationStatuses.OK : ValidationStatuses.ERROR,
                 Description = mySqlIsRunning ? "" : "Process is not running."
             });
@@ -146,31 +124,31 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateWorldDb,
+                    Name = SystemValidations.WORLD_DB,
                     Status = worldDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
                     Description = worldDbOk ? "" : "Unable to connect to World DB."
                 });
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateCharactersDb,
+                    Name = SystemValidations.CHARACTERS_DB,
                     Status = charactersDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
                     Description = charactersDbOk ? "" : "Unable to connect to Characters DB."
                 });
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateHotfixesDb,
+                    Name = SystemValidations.HOTFIXES_DB,
                     Status = hotfixesDbOk ? ValidationStatuses.OK : ValidationStatuses.ERROR,
                     Description = hotfixesDbOk ? "" : "Unable to connect to Hotfixes DB."
                 });
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateCreatureDisplayInfoOptionTable,
+                    Name = SystemValidations.CREATURE_DISPLAY_INFO_OPTION_TABLE,
                     Status = tableCreatureDisplayInfoOptionExists ? ValidationStatuses.OK : ValidationStatuses.ERROR,
                     Description = tableCreatureDisplayInfoOptionExists ? "" : "Table missing."
                 });
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateNpcModelItemSlotDisplayInfoTable,
+                    Name = SystemValidations.NPC_MODEL_ITEM_SLOT_DISPLAY_INFO_TABLE,
                     Status = tableNpcModelItemSlotDisplayInfoExists ? ValidationStatuses.OK : ValidationStatuses.ERROR,
                     Description = tableNpcModelItemSlotDisplayInfoExists ? "" : "Table missing."
                 });
@@ -179,19 +157,19 @@ namespace CreatureCreator.Infrastructure.Services
             {
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateWorldDb,
+                    Name = SystemValidations.WORLD_DB,
                     Status = ValidationStatuses.UNKNOWN,
                     Description = "MySQL is not running."
                 });
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateCharactersDb,
+                    Name = SystemValidations.CHARACTERS_DB,
                     Status = ValidationStatuses.UNKNOWN,
                     Description = "MySQL is not running."
                 });
                 result.Add(new ValidationStatusDto()
                 {
-                    Name = ValidationHelper.ValidateHotfixesDb,
+                    Name = SystemValidations.HOTFIXES_DB,
                     Status = ValidationStatuses.UNKNOWN,
                     Description = "MySQL is not running."
                 });

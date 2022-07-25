@@ -1,105 +1,20 @@
 ﻿@page "/"
+@using CreatureCreator.Infrastructure.Services
+@using Infrastructure.Enums
 
-@using CreatureCreator.Infrastructure.DtoModels;
-@using CreatureCreator.Infrastructure.Services;
-@using CreatureCreator.Core.Enums;
-
-@inject IDialogService DialogService
 @inject CreatureCreatorService Service
-
-<MudGrid>
-    <MudItem xs="6">
-        <MudTable Items="@systemStatus" Hover="true">
-            <HeaderContent>
-                <MudTh>@*Icon*@</MudTh>
-                <MudTh Style="text-align:left">CHECK</MudTh>
-                <MudTh>DESCRIPTION</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Avatar"><MudIcon Icon="@(GetStatusIcon(@context.Status))" Color="@(GetStatusColor(@context.Status))" /></MudTd>
-                <MudTd DataLabel="Check" Style="text-align:left">@context.Name</MudTd>
-                <MudTd DataLabel="Description">@context.Description</MudTd>
-            </RowTemplate>
-        </MudTable>
-    </MudItem>
-    <MudItem xs="6">
-        <MudTable Items="@creatures" Hover="true" @ref="@_table">
-            <HeaderContent>
-                <MudTh>@*Avatars*@</MudTh>
-                <MudTh>NAME</MudTh>
-                <MudTh>ID</MudTh>
-                <MudTh Style="text-align:right">ACTION</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Avatar"><MudAvatar Elevation="6" Image="@($"/images/races/{context.Gender.ToString().ToLower()}/{context.Race.ToString().ToLower().Replace("_","")}.jpg")"/></MudTd>
-                <MudTd DataLabel="Name">@context.Name</MudTd>
-                <MudTd DataLabel="Id">@context.Id</MudTd>
-                <MudTd DataLabel="Action">
-                    <MudStack Row="true" Justify="Justify.FlexEnd">
-                        <MudIconButton Size="Size.Small" Color="Color.Info" Icon="@Icons.Material.Filled.Edit" Href="@($"/creature/{@context.Id}")" />
-                        <MudIconButton Size="Size.Small" Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => DeleteCreature(@context.Id))"/>
-                    </MudStack>
-                </MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudPaper Class="d-flex flex-column align-center">
-                    <MudPagination Rectangular="true" Variant="Variant.Text" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="ma-2" SelectedChanged="PageChanged" />
-                </MudPaper>
-            </PagerContent>
-        </MudTable>
-    </MudItem>
-</MudGrid>
+@inject NavigationManager NavigationManager
 
 
-
-@code {
-    MudTable<DashboardCreatureDto> _table;
-
-    List<DashboardCreatureDto> creatures;
-    List<ValidationStatusDto> systemStatus;
-
+@code
+{
     protected override async Task OnInitializedAsync()
     {
-        systemStatus = await Service.ValidateDatabase();
-        // if (!systemStatus.Any(s => s.Status != ValidationStatuses.OK))
-            creatures = await Service.GetCreatures();
-
         await base.OnInitializedAsync();
-    }
-
-    public string GetStatusIcon(ValidationStatuses status)
-    {
-        return (status) switch
-        {
-            ValidationStatuses.UNKNOWN => Icons.Material.Filled.QuestionMark,
-            ValidationStatuses.OK => Icons.Material.Filled.Check,
-            ValidationStatuses.WARNING => Icons.Material.Filled.WarningAmber,
-            ValidationStatuses.ERROR => Icons.Material.Filled.ErrorOutline,
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-
-    public Color GetStatusColor(ValidationStatuses status)
-    {
-        return (status) switch
-        {
-            ValidationStatuses.UNKNOWN => Color.Default,
-            ValidationStatuses.OK => Color.Success,
-            ValidationStatuses.WARNING => Color.Warning,
-            ValidationStatuses.ERROR => Color.Error,
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-
-    async void DeleteCreature(int creatureId)
-    {
-        await Service.DeleteCreatureAsync(creatureId);
-        creatures.RemoveAll(c => c.Id == creatureId);
-        this.StateHasChanged();
-    }
-
-    void PageChanged(int i)
-    {
-        _table.NavigateTo(i - 1);
+        var startupCheck = await Service.ValidateDatabase();
+        if (startupCheck.Any(s => s.Status != ValidationStatuses.OK))
+            NavigationManager.NavigateTo("health");
+        else
+            NavigationManager.NavigateTo("dashboard");
     }
 }
